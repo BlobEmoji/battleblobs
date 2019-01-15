@@ -1,0 +1,50 @@
+# courtesy of Mots Doux#1107 (249257036640944129)
+
+meta:
+  # name of the bot. appears in embed footers, etc
+  # don't translate this, or do, i don't mind
+  battleblobs: |
+    BattleBlobs
+
+  help:
+    no_category: |
+      Pas de catégorie
+    command_header: |
+      Liste de commandes
+
+    categories:
+      # commands' categories in the help message
+      admin: |
+        Administration
+      meta: |
+        Meta
+      battleblobs: |
+        BattleBlobs
+
+    commands:
+      # help strings for various commands
+      help: |
+        Affiche les commandes disponibles pour vous.
+      meta: |
+        Affiche des informations sur le status actuel du bot.
+      eval: |
+        Exécute du code JS.
+      ping: |
+        Calcule la latence du bot.
+      locale: |
+        Change la langue du bot.
+
+
+commands:
+  # strings used in commands
+  locale:
+    none: |
+      Vous devez indiquer un nom de langue.
+    same: |
+      La langue définie est déjà celle choisie.
+    notfound: |
+      Cette langue n'a pas été trouvée.
+    changed: |
+      La langue pour ce serveur a été changée. Utilisez `{PREFIX}locale <langue>` n'importe quand pour changer.
+
+  

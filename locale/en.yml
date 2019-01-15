@@ -1,0 +1,49 @@
+
+meta:
+  # name of the bot. appears in embed footers, etc
+  # don't translate this, or do, i don't mind
+  battleblobs: |
+    BattleBlobs
+
+  help:
+    no_category: |
+      No Category
+    command_header: |
+      Command List
+
+    categories:
+      admin: |
+        Administration
+      meta: |
+        Meta
+      battleblobs: |
+        BattleBlobs
+
+    commands:
+      # help strings for various commands
+      help: |
+        Displays commands available to you.
+      meta: |
+        Displays info on the bot's current status.
+      eval: |
+        Executes arbitrary JS code.
+      ping: |
+        Calculates the bot connection round-trip time.
+      locale: |
+        Changes the bot locale.      
+
+
+commands:
+  # strings used in commands  
+  locale:
+    none: |
+      You must supply a locale name.
+    same: |
+      You are already set to this locale.
+    notfound: |
+      That locale couldn't be found.
+    changed: |
+      The guild locale has been changed. Use `{PREFIX}locale <name>` at any time to change back.
+
+  
+

@@ -1,0 +1,48 @@
+
+meta:
+  # name of the bot. appears in embed footers, etc
+  # don't translate this, or do, i don't mind
+  battleblobs: |
+    BattleBlobs
+
+  help:
+    no_category: |
+      カテゴリなし
+    command_header: |
+      コマンドリスト
+
+    categories:
+      admin: |
+        管理
+      meta: |
+        操作によって
+      battleblobs: |
+        BattleBlobs
+
+    commands:
+      # help strings for various commands
+      help: |
+        どのコマンドが使えらえるか表示する
+      meta: |
+        ボットの操作情報を表示する
+      eval: |
+        JavaScriptコードを評価する
+      ping: |
+        ラウンドトリップタイムを割出す
+      locale: |
+        ロケールを変更する
+
+      
+commands:
+  # strings used in commands  
+  locale:
+    none: |
+      ロケール名は必要です。
+    same: |
+      このロケールは既に設定しています。
+    notfound: |
+      そのロケールは見つかりませんでした。
+    changed: |
+      サーバーのロケールは変更しました。 `{PREFIX}locale <ロケール名>`でいつも変更できます。
+
+  

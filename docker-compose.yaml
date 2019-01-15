@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./:/app/repo
+
+  db:
+    image: postgres:10-alpine
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
