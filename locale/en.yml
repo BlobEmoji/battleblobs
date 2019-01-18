@@ -32,6 +32,10 @@ meta:
       locale: |
         Changes the bot locale.      
 
+      choose: |
+        Choose your team.
+      
+
 
 commands:
   # strings used in commands  

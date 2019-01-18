@@ -130,6 +130,15 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     `, [memberData.unique_id]);
     return resp.rows;
   }
+  
+  async isPartyEmpty(member) {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      SELECT count(*) filter(WHERE user_id = $1) as party_size
+      FROM blobs           
+    `, [memberData.unique_id]);    
+    return resp.rows[0].party_size;
+  }
 
   async updateRoamingState(member, yesNo) {
     const memberData = await this.memberData(member);
@@ -288,6 +297,15 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     `, [memberData.unique_id, blobDef.id, blobDef.rarity_scalar, addToParty]);
     return resp.rows[0];
   }
+  async searchBlob(blobName) {    
+    const resp = await this.query(`
+      SELECT * FROM blobdefs WHERE emoji_name = $1      
+    `, [blobName]);
+    if (resp.rows[0] == undefined){
+      return false;
+    }    
+    return resp.rows[0];
+  }
 
   async giveBlobParty(member, blobDef) {
     const party = await this.getParty(member);
@@ -321,6 +339,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     `, [memberData.unique_id]);
     return resp.rows;
   }
+  
 
   async getUserEffects(member) {
     const memberData = await this.memberData(member);
