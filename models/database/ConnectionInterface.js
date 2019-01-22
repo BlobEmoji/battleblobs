@@ -121,13 +121,13 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       SELECT *,
-        floor(ln((experience::FLOAT8 / 10) + 1) + 1)::INTEGER AS level
+        floor(ln((experience::FLOAT8 / 10) + 1) + 1)::INTEGER AS level                
       FROM blobs INNER JOIN blobdefs
       ON blobdefs.id = blobs.blob_id
       WHERE user_id = $1
       AND party_addition_time IS NOT NULL
       ORDER BY party_addition_time ASC
-    `, [memberData.unique_id]);
+    `, [memberData.unique_id]);    
     return resp.rows;
   }
   
@@ -276,16 +276,16 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const resp = await this.query(`
       WITH stat_info AS (
         SELECT
-        (20 + (random() * 8 * ln($3 / 2)))::INT as health,
-        (5 + (random() * 2.5 * ln($3)))::INT as atk,
-        (random() * ln($3))::INT as atk_dev,
-        (2 + (random() * 2 * ln($3)))::INT as def,
-        (random() * 0.5 * ln($3))::INT as def_dev,
-        (3 + (random() * ln($3)))::INT as spc,
-        (random() * 0.33 * ln($3))::INT as spc_dev,
+        (20 + (random() * 8))::INT as health,
+        (5 + (random() * 2.5))::INT as atk,
+        (random())::INT as atk_dev,
+        (2 + (random() * 2))::INT as def,
+        (random() * 0.5)::INT as def_dev,
+        (3 + (random()))::INT as spc,
+        (random() * 0.33)::INT as spc_dev,
         5 as spd,
-        (random() * 0.25 * ln($3))::INT as spd_dev,
-        CASE WHEN $4::BOOLEAN THEN now() AT TIME ZONE 'UTC'
+        (random() * 0.25)::INT as spd_dev,
+        CASE WHEN $3::BOOLEAN THEN now() AT TIME ZONE 'UTC'
         ELSE NULL END AS add_party
       )
       INSERT INTO blobs (blob_id, user_id, vitality, health, attack, attack_dev,
@@ -294,7 +294,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       def, def_dev, spc, spc_dev, spd, spd_dev, add_party
       FROM stat_info
       RETURNING *
-    `, [memberData.unique_id, blobDef.id, blobDef.rarity_scalar, addToParty]);
+    `, [memberData.unique_id, blobDef.id, addToParty]);
     return resp.rows[0];
   }
   async searchBlob(blobName) {    

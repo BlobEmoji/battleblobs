@@ -37,22 +37,15 @@ class Choose extends CommandBaseClass {
                         blobdefs.push(temp);
                     }
                 }
-                var blobemojis = [];
+                var blob_emojis = [];
                 blobdefs.forEach(function (element) {
                     var emoji;
                     if (emoji = context.client.emojis.find(emoji => emoji.id == element.emoji_id)) {
-                        if (emoji.animated) {
-                            // for animated emojis
-                            blobemojis.push("<a:" + emoji.name + ":" + emoji.id + ">");
-                        }
-                        else {
-                            // for regular emojis
-                            blobemojis.push("<:" + emoji.name + ":" + emoji.id + ">");
-                        }
+                        blob_emojis.push(`${emoji}`);
                     }
                     else {
                         // if the emoji is not found
-                        blobemojis.push(":" + element.emoji_name + ":");
+                        blob_emojis.push(`:${element.emoji_name}:`);
                     }
                 });
 
