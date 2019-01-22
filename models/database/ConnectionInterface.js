@@ -321,6 +321,67 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       party.push(blob);
     return { blob, addToParty, party };
   }
+  
+  async getRank(member) {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      WITH rank_table AS (
+        SELECT unique_id, \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
+        ranking DESC,
+        \"user\" DESC)
+      FROM user_data
+      WHERE guild = $2)
+      SELECT row_number, user_id, ranking
+      FROM rank_table
+      WHERE unique_id = $1
+    `, [memberData.unique_id, memberData.guild]);
+    return resp.rows[0];
+  } 
+  
+  async getAdjRanks(member, row) {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      WITH rank_table AS (
+        SELECT \"user\", ranking, ROW_NUMBER () OVER (ORDER BY
+        ranking DESC,
+        \"user\" DESC)
+      FROM user_data
+      WHERE guild = $2)
+      SELECT row_number, \"user\", ranking
+      FROM rank_table
+      WHERE row_number = $3 + 1 
+      OR row_number = $3 -1
+    `, [memberData.unique_id, memberData.guild, row]);
+    return resp.rows;
+  }
+
+  async getTop5Ranks(member) {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      WITH rank_table AS (
+        SELECT unique_id, \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
+        ranking DESC,
+        \"user\" DESC)
+      FROM user_data
+      WHERE guild = $1)
+      SELECT row_number, user_id, ranking
+      FROM rank_table
+      WHERE row_number < 6
+    `, [memberData.guild]);    
+    return resp.rows;
+  }
+  
+  async addRanking(member, amount)  {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      UPDATE user_data
+      SET ranking = user_data.ranking + $2
+      WHERE unique_id = $1::BIGINT
+      RETURNING *
+    `, [memberData.unique_id, amount]);
+    return resp.rows[0];
+  }
+
 
   async changeGuildLocale(guild_id, locale) {
     const resp = await this.query(`

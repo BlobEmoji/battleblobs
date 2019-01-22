@@ -161,6 +161,9 @@ CREATE TABLE IF NOT EXISTS user_data (
     -- how much experience the user currently has
     experience BIGINT CONSTRAINT experience_check CHECK (experience >= 0) DEFAULT 0,
 
+    -- player ranking among players
+    ranking INT CONSTRAINT ranking_check CHECK (ranking >= 0) DEFAULT 0,
+
     -- user state
     -- check parse_state for definitions
     "state" BIT(16) DEFAULT B'0000000000000000',
