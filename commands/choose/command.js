@@ -49,7 +49,7 @@ class Choose extends CommandBaseClass {
                     }
                 });
 
-                context.send("Your chosen blobs:\n" + blobemojis.join(' ') 
+                context.send("Your chosen blobs:\n" + blob_emojis.join(' ') 
                 + `\nYou will not be able to change them later. \`${context.prefix}confirm\` or \`${context.prefix}cancel\``);
 
                 const re = new RegExp(`^(?:${context.client.prefixRegex})(confirm|cancel)(.*)$`);

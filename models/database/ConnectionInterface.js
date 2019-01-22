@@ -273,6 +273,8 @@ class ConnectionInterface extends ConnectionInterfaceBase {
 
   async giveUserBlob(member, blobDef, addToParty) {
     const memberData = await this.memberData(member);
+    const attackMoves = (await this.query(`SELECT id FROM blobmoves WHERE damage > 0`)).rows;    
+    // ensures the blob has a damaging move
     const resp = await this.query(`
       WITH stat_info AS (
         SELECT
@@ -285,13 +287,17 @@ class ConnectionInterface extends ConnectionInterfaceBase {
         (random() * 0.33)::INT as spc_dev,
         5 as spd,
         (random() * 0.25)::INT as spd_dev,
+        ${attackMoves[Math.floor(Math.random() * attackMoves.length)].id}::INT as move_one,
+        (1 + random() * 25)::INT as move_two,
+        (1 + random() * 25)::INT as move_three,
+        (1 + random() * 25)::INT as move_four,
         CASE WHEN $3::BOOLEAN THEN now() AT TIME ZONE 'UTC'
         ELSE NULL END AS add_party
       )
       INSERT INTO blobs (blob_id, user_id, vitality, health, attack, attack_dev,
-        defense, defense_dev, special, special_dev, speed, speed_dev, party_addition_time)
+        defense, defense_dev, special, special_dev, speed, speed_dev, move_one, move_two, move_three, move_four, party_addition_time)
       SELECT $2::BIGINT, $1::BIGINT, health, health, atk, atk_dev,
-      def, def_dev, spc, spc_dev, spd, spd_dev, add_party
+      def, def_dev, spc, spc_dev, spd, spd_dev, move_one, move_two, move_three, move_four, add_party
       FROM stat_info
       RETURNING *
     `, [memberData.unique_id, blobDef.id, addToParty]);

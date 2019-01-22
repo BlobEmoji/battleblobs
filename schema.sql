@@ -358,6 +358,18 @@ CREATE TABLE IF NOT EXISTS blobs (
     -- how much the speed deviates at any given time, higher values decrease speed certainty
     speed_dev INT CONSTRAINT speed_dev_check CHECK (speed_dev >= 0 AND speed >= speed_dev) DEFAULT 0,
 
+    -- id of the blob's first move
+    move_one INT,
+
+    -- id of the blob's second move
+    move_two INT,
+
+    -- id of the blob's third move
+    move_three INT,
+
+    -- id of the blob's fourth move
+    move_four INT,
+
     -- when this blob was captured. NULL if still roaming.
     capture_time TIMESTAMP DEFAULT (now() AT TIME ZONE 'UTC'),
 
