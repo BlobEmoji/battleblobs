@@ -39,42 +39,45 @@ class Party extends CommandBaseClass {
 
             cur_total_health += element.health;
             total_health += element.vitality;
-        });        
+        });
         context.send({
             embed: {
                 color: parseInt(await this.healthColor(cur_total_health / total_health)),
                 title: `${context.author.username}'s Party`,
-                fields:[
+                footer: {
+                    text: "-stats [slot] to view individual statistics"
+                },
+                fields: [
                     {
                         name: blob_emojis[0],
-                        value: `\`[${'+'.repeat(party[0].health/party[0].vitality*10) + '-'.repeat(10-party[0].health/party[0].vitality*10)}]\` ${party[0].health}/${party[0].vitality} Lv.${party[0].level}`,
+                        value: `\`[${'+'.repeat(party[0].health / party[0].vitality * 10) + '-'.repeat(10 - party[0].health / party[0].vitality * 10)}]\` ${party[0].health}/${party[0].vitality} Lv.${party[0].level}`,
                         inline: true
-                    }, 
+                    },
                     {
                         name: blob_emojis[1],
-                        value: `\`[${'+'.repeat(party[1].health/party[1].vitality*10) + '-'.repeat(10-party[1].health/party[1].vitality*10)}]\` ${party[1].health}/${party[1].vitality} Lv.${party[1].level}`,
+                        value: `\`[${'+'.repeat(party[1].health / party[1].vitality * 10) + '-'.repeat(10 - party[1].health / party[1].vitality * 10)}]\` ${party[1].health}/${party[1].vitality} Lv.${party[1].level}`,
                         inline: true
-                    }, 
+                    },
                     {
                         name: blob_emojis[2],
-                        value: `\`[${'+'.repeat(party[2].health/party[2].vitality*10) + '-'.repeat(10-party[2].health/party[2].vitality*10)}]\` ${party[2].health}/${party[2].vitality} Lv.${party[2].level}`,
+                        value: `\`[${'+'.repeat(party[2].health / party[2].vitality * 10) + '-'.repeat(10 - party[2].health / party[2].vitality * 10)}]\` ${party[2].health}/${party[2].vitality} Lv.${party[2].level}`,
                         inline: true
-                    }, 
+                    },
                     {
                         name: blob_emojis[3],
-                        value: `\`[${'+'.repeat(party[3].health/party[3].vitality*10) + '-'.repeat(10-party[3].health/party[3].vitality*10)}]\` ${party[3].health}/${party[3].vitality} Lv.${party[3].level}`,
+                        value: `\`[${'+'.repeat(party[3].health / party[3].vitality * 10) + '-'.repeat(10 - party[3].health / party[3].vitality * 10)}]\` ${party[3].health}/${party[3].vitality} Lv.${party[3].level}`,
                         inline: true
-                    }, 
+                    },
                     {
                         name: blob_emojis[4],
-                        value: `\`[${'+'.repeat(party[4].health/party[4].vitality*10) + '-'.repeat(10-party[4].health/party[4].vitality*10)}]\` ${party[4].health}/${party[4].vitality} Lv.${party[4].level}`,
+                        value: `\`[${'+'.repeat(party[4].health / party[4].vitality * 10) + '-'.repeat(10 - party[4].health / party[4].vitality * 10)}]\` ${party[4].health}/${party[4].vitality} Lv.${party[4].level}`,
                         inline: true
-                    }, 
+                    },
                     {
                         name: blob_emojis[5],
-                        value: `\`[${'+'.repeat(party[5].health/party[5].vitality*10) + '-'.repeat(10-party[5].health/party[5].vitality*10)}]\` ${party[5].health}/${party[5].vitality} Lv.${party[5].level}`,
+                        value: `\`[${'+'.repeat(party[5].health / party[5].vitality * 10) + '-'.repeat(10 - party[5].health / party[5].vitality * 10)}]\` ${party[5].health}/${party[5].vitality} Lv.${party[5].level}`,
                         inline: true
-                    }, 
+                    }
                 ]
             }
         });
@@ -92,7 +95,7 @@ class Party extends CommandBaseClass {
             br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
             rr = ar + amount * (br - ar),
             rg = ag + amount * (bg - ag),
-            rb = ab + amount * (bb - ab);        
+            rb = ab + amount * (bb - ab);
         return '0x' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     }
 }

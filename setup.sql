@@ -12,6 +12,32 @@ COPY blobrarity (id, name, rarity_scalar) FROM stdin;
 4	rarity.common	10
 \.
 
+COPY blobmoves (id, move_name, damage, accuracy, attack_boost, defense_boost, speed_boost, attack_debuff, defense_debuff, speed_debuff, recoil, status_effect, status_turns) FROM stdin;
+1	Squash	100	0.7	0	0	-2	0	0	0	0.2	None	0
+2	Roll	70	0.9	0	0	3	0	0	0	0	None	0
+3	Peek	0	1	0	2	0	0	0	0	0	None	0
+4	Bounce	90	0.75	0	0	1	0	0	0	0.1	None	0
+5	Wobble	0	1	2	0	2	0	0	0	0	None	0
+6	Blush	0	1	0	0	0	3	3	0	0	None	0
+7	Melt	0	1	0	2	-3	0	0	0	0	None	0
+8	Dance 	0	1	3	0	0	0	0	0	0	None	0
+9	Think	0	1	0	3	3	0	0	0	0	None	0
+10	Nom	80	1	0	0	0	0	0	0	0	None	0
+11	Glare	0	1	0	0	0	0	2	2	0	None	0
+12	Party	0	1	2	0	2	0	0	0	0	None	0
+13	Sweat	0	1	1	0	1	0	0	0	0	None	0
+14	Pats	50	1	0	0	0	0	2	0	0	None	0
+15	Hammer	120	1	0	0	0	0	0	0	0	None	0
+16	Sing	0	1	0	0	0	0	0	0	0	Sleep	3
+17	Slash	90	0.9	0	0	0	0	0	0	0	None	0
+18	Launch	100	0.7	0	0	0	0	0	0	0.3	None	0
+19	Splosion	200	1	0	0	0	0	0	0	10	None	0
+20	Angery	0	1	3	0	0	3	0	0	0	None	0
+21	Kiss	0	1	0	0	0	3	3	0	0	None	0
+22	Swing	85	1	0	0	0	0	0	0	0	None	0
+23	Torch	60	0.8	0	0	0	0	0	0	0	Burn	3
+\.
+
 COPY blobdefs (id, emoji_id, emoji_name, rarity) FROM stdin;
 1	396521772842745857	wolfiriblob	1
 2	396521773115637810	b1nzyblob	1

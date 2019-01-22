@@ -260,6 +260,47 @@ CREATE TABLE IF NOT EXISTS blobrarity (
     rarity_scalar INT DEFAULT 10
 );
 
+CREATE TABLE IF NOT EXISTS blobmoves (
+    -- unique ID is a single number used to identify this move.
+    id BIGSERIAL PRIMARY KEY,
+
+    -- the name of the emoji in discord
+    move_name VARCHAR(32),
+
+    -- attack damage of move
+    damage INT,
+
+    -- chance that the move will hit
+    accuracy DOUBLE PRECISION,
+
+    -- the effect on the player's attack
+    attack_boost INT,
+
+    -- the effect on the player's defense
+    defense_boost INT,
+
+    -- the effect on the player's speed
+    speed_boost INT,
+
+    -- the effect on the enemy's attack
+    attack_debuff INT,
+
+    -- the effect on the enemy's defense
+    defense_debuff INT,
+
+    -- the effect on the enemy's speed
+    speed_debuff INT,
+
+    -- recoil percentage from move
+    recoil DOUBLE PRECISION,
+
+    -- inflicted status effect
+    status_effect VARCHAR(32),
+
+    -- number of turns status takes effect
+    status_turns INT
+);
+
 CREATE TABLE IF NOT EXISTS blobdefs (
     -- unique ID is a single number used to identify this blob.
     -- this way if the emoji ID changes we won't break everything
