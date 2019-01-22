@@ -342,16 +342,16 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       WITH rank_table AS (
-        SELECT \"user\", ranking, ROW_NUMBER () OVER (ORDER BY
+        SELECT \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
         ranking DESC,
         \"user\" DESC)
       FROM user_data
-      WHERE guild = $2)
-      SELECT row_number, \"user\", ranking
+      WHERE guild = $1)
+      SELECT row_number, user_id, ranking
       FROM rank_table
-      WHERE row_number = $3 + 1 
-      OR row_number = $3 -1
-    `, [memberData.unique_id, memberData.guild, row]);
+      WHERE row_number = $2 + 1 
+      OR row_number = $2 -1
+    `, [memberData.guild, row]);
     return resp.rows;
   }
 
