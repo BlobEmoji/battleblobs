@@ -337,29 +337,26 @@ CREATE TABLE IF NOT EXISTS blobs (
     -- how much health this blob has. if this is 0, the blob has fainted.
     health INT CONSTRAINT health_check CHECK (health >= 0 AND vitality >= health) DEFAULT 40,
 
+    -- health individual values: randomizes stats per blob
+    health_iv INT DEFAULT 0,
+
     -- attack power of this blob
     attack INT CONSTRAINT attack_check CHECK (attack >= 0) DEFAULT 5,
 
-    -- how much the attack stat deviates at any given time, higher values decrease attack power certainty
-    attack_dev INT CONSTRAINT attack_dev_check CHECK (attack_dev >= 0 AND attack >= attack_dev) DEFAULT 1,
-
+    -- attack individual values: randomizes stats per blob
+    attack_iv INT DEFAULT 0,
+    
     -- defense power of this blob
     defense INT CONSTRAINT defense_check CHECK (defense >= 0) DEFAULT 4,
 
-    -- how much the defense stat deviates at any given time, higher values decrease defense certainty
-    defense_dev INT CONSTRAINT defense_dev_check CHECK (defense_dev >= 0 AND defense >= defense_dev) DEFAULT 0,
-
-    -- 'special' power, used to determine effectiveness of env/stage moves
-    special INT CONSTRAINT special_check CHECK (special >= 0) DEFAULT 0,
-
-    -- how much the special stat deviates at any given time, higher values decrease effectiveness certainty
-    special_dev INT CONSTRAINT special_dev_check CHECK (special_dev >= 0 AND special >= special_dev) DEFAULT 0,
+    -- defense individual values: randomizes stats per blob
+    defense_iv INT DEFAULT 0,
 
     -- 'speed' of this blob, helps determine who goes first
     speed INT CONSTRAINT speed_check CHECK (speed >= 0) DEFAULT 5,
 
-    -- how much the speed deviates at any given time, higher values decrease speed certainty
-    speed_dev INT CONSTRAINT speed_dev_check CHECK (speed_dev >= 0 AND speed >= speed_dev) DEFAULT 0,
+    -- speed individual values: randomizes stats per blob
+    speed_iv INT DEFAULT 0,
 
     -- id of the blob's first move
     move_one INT,
@@ -373,17 +370,14 @@ CREATE TABLE IF NOT EXISTS blobs (
     -- id of the blob's fourth move
     move_four INT,
 
-    -- when this blob was captured. NULL if still roaming.
-    capture_time TIMESTAMP DEFAULT (now() AT TIME ZONE 'UTC'),
-
-    -- time this was traded to a user last. NULL if never traded.
-    traded_time TIMESTAMP,
-
+    slot INT, 
     -- time this was added to the party. parties are sorted ascending on this value,
     -- with the most recently added party member being last.
     party_addition_time TIMESTAMP,
 
-    experience BIGINT CONSTRAINT no_negative_experience CHECK (experience >= 0) DEFAULT 0
+    experience BIGINT CONSTRAINT no_negative_experience CHECK (experience >= 0) DEFAULT 0,
+
+    blob_level INT CONSTRAINT level_check CHECK (blob_level > 0 AND blob_level <= 100) DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS effecttypes (

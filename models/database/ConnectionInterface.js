@@ -56,14 +56,14 @@ class ConnectionInterface extends ConnectionInterfaceBase {
         last_acked_location = last_moved_location AS roaming_effect
       FROM final_query, parse_location(final_query.location), parse_state(final_query."state"), guild_table
     `, [
-      member.guild.id,
-      member.guild.name,
-      member.user.id,
-      member.user.username,
-      member.user.discriminator,
-      member.user.bot
-    ]);
-    
+        member.guild.id,
+        member.guild.name,
+        member.user.id,
+        member.user.username,
+        member.user.discriminator,
+        member.user.bot
+      ]);
+
     if (resp.rows[0] && !resp.rows[0].updated)
       // user has just been created, supply 5 basic balls
       await this.giveUserItem(member, 1, 5);
@@ -89,7 +89,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
 
       // create SQL prepared arg string and the respective values
       blobList.map((blobID, index) => {
-        sqlListing.push(`$${index+2}`);
+        sqlListing.push(`$${index + 2}`);
         argumentListing.push(blobID);
       });
 
@@ -120,23 +120,22 @@ class ConnectionInterface extends ConnectionInterfaceBase {
   async getParty(member) {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
-      SELECT *,
-        floor(ln((experience::FLOAT8 / 10) + 1) + 1)::INTEGER AS level                
+      SELECT *                
       FROM blobs INNER JOIN blobdefs
       ON blobdefs.id = blobs.blob_id
       WHERE user_id = $1
       AND party_addition_time IS NOT NULL
       ORDER BY party_addition_time ASC
-    `, [memberData.unique_id]);    
+    `, [memberData.unique_id]);
     return resp.rows;
   }
-  
+
   async isPartyEmpty(member) {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       SELECT count(*) filter(WHERE user_id = $1) as party_size
       FROM blobs           
-    `, [memberData.unique_id]);    
+    `, [memberData.unique_id]);
     return resp.rows[0].party_size;
   }
 
@@ -270,58 +269,172 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     `, [memberData.unique_id]);
     return resp.rows;
   }
+  async giveBlobExperience(blob, exp) {
+    const resp = await this.query(`
+    UPDATE blobs
+    SET experience = blobs.experience + $2
+    WHERE unique_id = $1
+    RETURNING *
+    `, [blob.unique_id, exp]);
+    return resp.rows[0];
+  }
+  async setBlobLevel(blob, level) {
+    const resp = await this.query(`
+    UPDATE blobs 
+    SET blob_level = $2::INT,
+    health = FLOOR($7::DECIMAL / $8::DECIMAL * FLOOR((2 * 30 + $3::INT) * $2 / 100 + 1 + 10)),
+    vitality = FLOOR((2 * 30 + $3::INT) * $2 / 100 + 1 + 10),
+    attack = FLOOR((2 * 30 + $4::INT) * $2 / 100 + 5),
+    defense = FLOOR((2 * 30 + $5::INT) * $2 / 100 + 5),
+    speed = FLOOR((2 * 30 + $6::INT) * $2 / 100 + 5)  
+    WHERE unique_id = $1
+    RETURNING *
+    `, [blob.unique_id, level, blob.health_iv, blob.attack_iv, blob.defense_iv, blob.speed_iv, blob.health, blob.vitality]);
+    return resp.rows[0];
+  }
+  async getMove(move_id) {
+    const resp = await this.query(`
+    SELECT * FROM blobmoves WHERE id = $1`, [move_id]);
+    return resp.rows[0];
+  }
+  async getRandomBlobMove() {
+    const resp = await this.query(
+      `SELECT id FROM blobmoves`);
+    return resp.rows[Math.floor(Math.random() * resp.rows.length)].id;
+  }
 
-  async giveUserBlob(member, blobDef, addToParty) {
+  async getRandomBlobAttackMove() {
+    const resp = await this.query(
+      `SELECT id FROM blobmoves WHERE damage > 0 AND damage < 200`);
+    return resp.rows[Math.floor(Math.random() * resp.rows.length)].id;
+  }
+
+  async randomizedIV() {
+    return Math.floor(Math.random() * 32);
+  }
+
+  async giveUserBlob(member, blobDef, addToParty, slot) {
     const memberData = await this.memberData(member);
-    const attackMoves = (await this.query(`SELECT id FROM blobmoves WHERE damage > 0`)).rows;    
-    // ensures the blob has a damaging move
     const resp = await this.query(`
       WITH stat_info AS (
         SELECT
-        (20 + (random() * 8))::INT as health,
-        (5 + (random() * 2.5))::INT as atk,
-        (random())::INT as atk_dev,
-        (2 + (random() * 2))::INT as def,
-        (random() * 0.5)::INT as def_dev,
-        (3 + (random()))::INT as spc,
-        (random() * 0.33)::INT as spc_dev,
-        5 as spd,
-        (random() * 0.25)::INT as spd_dev,
-        ${attackMoves[Math.floor(Math.random() * attackMoves.length)].id}::INT as move_one,
-        (1 + random() * 25)::INT as move_two,
-        (1 + random() * 25)::INT as move_three,
-        (1 + random() * 25)::INT as move_four,
+        FLOOR((2 * 30 + $4::INT) * 1 / 100 + 1 + 10) as health,
+        $4::INT as health_iv,
+        FLOOR((2 * 30 + $5::INT) * 1 / 100 + 5) as atk,
+        $5::INT as atk_iv,
+        FLOOR((2 * 30 + $6::INT) * 1 / 100 + 5) as def,
+        $6::INT as def_iv,
+        FLOOR((2 * 30 + $7::INT) * 1 / 100 + 5) as spd,
+        $7::INT as spd_iv,
+        $8::INT as move_one,
+        $9::INT as move_two,
+        $10::INT as move_three,
+        $11::INT as move_four,
+        $12::INT as slot,
         CASE WHEN $3::BOOLEAN THEN now() AT TIME ZONE 'UTC'
         ELSE NULL END AS add_party
       )
-      INSERT INTO blobs (blob_id, user_id, vitality, health, attack, attack_dev,
-        defense, defense_dev, special, special_dev, speed, speed_dev, move_one, move_two, move_three, move_four, party_addition_time)
-      SELECT $2::BIGINT, $1::BIGINT, health, health, atk, atk_dev,
-      def, def_dev, spc, spc_dev, spd, spd_dev, move_one, move_two, move_three, move_four, add_party
+      INSERT INTO blobs (blob_id, user_id, vitality, health, health_iv, attack, attack_iv,
+        defense, defense_iv, speed, speed_iv, move_one, move_two, move_three, move_four, slot, party_addition_time)
+      SELECT $2::BIGINT, $1::BIGINT, health, health, health_iv, atk, atk_iv,
+      def, def_iv, spd, spd_iv, move_one, move_two, move_three, move_four, slot, add_party
       FROM stat_info
       RETURNING *
-    `, [memberData.unique_id, blobDef.id, addToParty]);
-    return resp.rows[0];
-  }
-  async searchBlob(blobName) {    
-    const resp = await this.query(`
-      SELECT * FROM blobdefs WHERE emoji_name = $1      
-    `, [blobName]);
-    if (resp.rows[0] == undefined){
-      return false;
-    }    
+    `, [memberData.unique_id, blobDef.id, addToParty, await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), await this.getRandomBlobAttackMove(), await this.getRandomBlobMove(), await this.getRandomBlobMove(), await this.getRandomBlobMove(), slot]);
     return resp.rows[0];
   }
 
-  async giveBlobParty(member, blobDef) {
+  async searchBlob(blobName) {
+    const resp = await this.query(`
+      SELECT * FROM blobdefs WHERE emoji_name = $1      
+    `, [blobName]);
+    if (resp.rows[0] == undefined) {
+      return false;
+    }
+    return resp.rows[0];
+  }
+
+  async getBlob(unique_id) {    
+    const resp = await this.query(`
+      SELECT *                
+      FROM blobs INNER JOIN blobdefs
+      ON blobdefs.id = blobs.blob_id
+      WHERE unique_id = $1      
+    `, [unique_id]);
+    return resp.rows[0];
+  }
+  async updateBlob(blob) { 
+    let new_blob = [
+      blob.unique_id,
+      blob.blob_id,
+      blob.vitality,
+      blob.health,
+      blob.health_iv,
+      blob.attack,
+      blob.attack_iv,
+      blob.defense,
+      blob.defense_iv,
+      blob.speed,
+      blob.speed_iv,
+      blob.move_one,
+      blob.move_two,
+      blob.move_three,
+      blob.move_four,
+      blob.slot,
+      blob.experience,
+      blob.blob_level,
+    ]
+    const resp = await this.query(`
+    UPDATE blobs
+    SET blob_id = $2::BIGINT,
+    vitality = $3::INT,
+    health = $4::INT,
+    health_iv = $5::INT,
+    attack = $6::INT,
+    attack_iv = $7::INT,
+    defense = $8::INT,
+    defense_iv = $9::INT,
+    speed = $10::INT,
+    speed_iv = $11::INT,
+    move_one = $12::INT,
+    move_two = $13::INT,
+    move_three = $14::INT,
+    move_four = $15::INT,
+    slot = $16::INT,
+    experience = $17::BIGINT,
+    blob_level = $18::INT
+    WHERE unique_id = $1
+    RETURNING *
+    `, new_blob);
+    return resp.rows[0];
+  }
+
+  async updateBlobHealth(blob) { 
+    const resp = await this.query(`
+    UPDATE blobs
+    SET health = $2::INT
+    WHERE unique_id = $1
+    RETURNING *
+    `, [blob.unique_id, blob.health]);
+    return resp.rows[0];
+  }
+
+  async generateRandomBlob() {
+    const resp = await this.query(`
+      SELECT * FROM blobdefs
+    `);
+    return resp.rows[Math.floor(resp.rows.length * Math.random())];
+  }
+
+  async giveBlobParty(member, blobDef, slot) {
     const party = await this.getParty(member);
-    const addToParty = party.length < 4;
-    const blob = await this.giveUserBlob(member, blobDef, addToParty);
+    const addToParty = party.length < 6;
+    const blob = await this.giveUserBlob(member, blobDef, addToParty, slot);
     if (addToParty)
       party.push(blob);
     return { blob, addToParty, party };
   }
-  
+
   async getRank(member) {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
@@ -336,8 +449,8 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       WHERE unique_id = $1
     `, [memberData.unique_id, memberData.guild]);
     return resp.rows[0];
-  } 
-  
+  }
+
   async getAdjRanks(member, row) {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
@@ -367,11 +480,11 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       SELECT row_number, user_id, ranking
       FROM rank_table
       WHERE row_number < 6
-    `, [memberData.guild]);    
+    `, [memberData.guild]);
     return resp.rows;
   }
-  
-  async addRanking(member, amount)  {
+
+  async modifyRanking(member, amount) {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       UPDATE user_data
@@ -400,13 +513,11 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       FROM blobs INNER JOIN blobdefs
       ON blobdefs.id = blobs.blob_id
       WHERE user_id = $1
-      ORDER BY party_addition_time ASC,
-      (CASE WHEN traded_time IS NOT NULL THEN traded_time
-      ELSE capture_time END) DESC
+      ORDER BY party_addition_time ASC      
     `, [memberData.unique_id]);
     return resp.rows;
   }
-  
+
 
   async getUserEffects(member) {
     const memberData = await this.memberData(member);
