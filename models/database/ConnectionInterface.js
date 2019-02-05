@@ -340,7 +340,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       def, def_iv, spd, spd_iv, move_one, move_two, move_three, move_four, slot, add_party
       FROM stat_info
       RETURNING *
-    `, [memberData.unique_id, blobDef.id, addToParty, await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), await this.getRandomBlobAttackMove(), await this.getRandomBlobMove(), await this.getRandomBlobMove(), await this.getRandomBlobMove(), slot]);
+    `, [memberData.unique_id, blobDef.id, addToParty, await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), await this.randomizedIV(), blobDef.default_move.id, await this.getRandomBlobAttackMove(), await this.getRandomBlobMove(), await this.getRandomBlobMove(), slot]);
     return resp.rows[0];
   }
 

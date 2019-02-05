@@ -315,6 +315,9 @@ CREATE TABLE IF NOT EXISTS blobdefs (
     -- the name of the emoji in discord
     emoji_name VARCHAR(32),
 
+    -- the move ID of its default move
+    default_move_id INT, 
+
     -- rarity of this blob
     rarity INT NOT NULL REFERENCES blobrarity ON DELETE RESTRICT
 );
