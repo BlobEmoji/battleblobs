@@ -382,22 +382,25 @@ COPY itemmodes (id) FROM stdin;
 1
 2
 3
+4
+5
+6
 \.
 
-COPY itemdefs (id, name, value, potential, mode, description, confirm_use_message, appearance_modulus, appearance_threshold) FROM stdin;
-1	item.ball.basic.name	5	30	1	item.ball.basic.description	.	1	1
-2	item.ball.great.name	25	45	1	item.ball.great.description	.	66	60
-3	item.ball.ultra.name	50	70	1	item.ball.ultra.description	.	32	26
-4	item.ball.master.name	80	95	1	item.ball.master.description	.	127	40
-5	item.ball.aqua.name	30	40	1	item.ball.aqua.description	.	64	40
-6	item.ball.gale.name	40	40	1	item.ball.gale.description	.	65	39
-7	item.ball.calm.name	40	35	1	item.ball.calm.description	.	80	38
-8	item.ball.desert.name	35	35	1	item.ball.desert.description	.	70	38
-9	item.ball.improbability.name	120	120	1	item.ball.improbability.description	.	452	2
-10	item.regen.spikey_fruit	15	5	2	item.regen.description	item.regen.use_message	258	220
-11	item.regen.pudding	40	15	2	item.regen.description	item.regen.use_message	259	200
-12	item.regen.sugar_cube	70	30	2	item.regen.description	item.regen.use_message	280	200
-13	item.lure.blob.name	30	10	3	item.lure.blob.description	item.lure.blob.use_message	67	38
+COPY itemdefs (id, name, value, battle_use, potential, mode, description, category) FROM stdin;
+1	Potion	5	TRUE	20	1	Restores HP of a blob by 20 points.	Medicine
+2	Super Potion	10	TRUE	60	1	Restores HP of a blob by 60 points.	Medicine
+3	Hyper Potion	20	TRUE	200	1	Restores HP of a blob by 200 points.	Medicine
+4	Max Potion	30	TRUE	100	2	Fully restores HP of a blob.	Medicine
+5	Revive	15	TRUE	50	3	Revives a fainted blob with half its HP.	Medicine
+6	Max Revive	40	TRUE	100	3	Revives a fainted blob with all its HP.	Medicine
+7	Burn Heal	10	TRUE	1	4	Heals blob of a burn.	Medicine
+8	Awakening	10	TRUE	2	4	Awakens a sleeping blob.	Medicine
+9	HP Up	50	FALSE	1	5	Raises the HP of a blob.	Medicine
+10	Attack Up	80	FALSE	2	5	Raises the Attack of a blob.	Medicine
+11	Defense Up	60	FALSE	3	5	Raises the Defense of a blob.	Medicine
+12	Speed Up	50	FALSE	4	5	Raises the Speed of a blob.	Medicine
+13	Rare Candy	100	FALSE	5	5	Raises the level of a blob by one.	Medicine
 \.
 
 COPY effecttypes (id) FROM stdin;

@@ -214,21 +214,11 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     return resp.rows[0];
   }
 
-  async getStoreItems(potential, effect) {
+  async getStoreItems() {
     const resp = await this.query(`
-      SELECT *,
-      (exp(ln(value) * (
-          CASE WHEN $2::BOOLEAN AND $1 % 3 = 0 THEN 0.7
-          ELSE 0.8 END + (
-            SQRT(1764 - (
-              ((value) * $1::BIGINT) % 1764
-            )) * 0.005
-          )
-        )
-      ))::INTEGER AS actual_price,
-      (($1 + id) % appearance_modulus) < appearance_threshold AS available
+      SELECT *
       FROM itemdefs
-    `, [potential, effect]);
+    `,);
     return resp.rows;
   }
 

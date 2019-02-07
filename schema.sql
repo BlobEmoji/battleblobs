@@ -199,19 +199,19 @@ CREATE TABLE IF NOT EXISTS itemmodes (
 CREATE TABLE IF NOT EXISTS itemdefs (
     -- the behavior of these items should be determinable just from their records
     -- however in edge cases or for other reasons the ID can be used to specify
-    -- specific unique behaviors if required.
+    -- specific unique behaviors if required. 
     id SERIAL PRIMARY KEY,
 
     -- id of localestr that refers to the name of this item
     "name" VARCHAR(128),
 
     -- value is how much this item sells in the store for.
-    -- if this is a minus number, do not show this in the store.
     "value" INT,
+    
+    -- if the item can be used in battle
+    battle_use BOOLEAN,
 
     -- potential is defined on a mode-specific basis
-    -- for example, for a ball this may be its effectiveness as a percentage
-    -- but for an energy regen it might be how much energy it gives you
     "potential" INT,
 
     mode INT REFERENCES itemmodes ON DELETE RESTRICT,
@@ -219,12 +219,9 @@ CREATE TABLE IF NOT EXISTS itemdefs (
     -- id of localestr that refers to this item's description
     "description" TEXT,
 
-    -- id of localestr that refers to this item's use message
-    confirm_use_message TEXT,
+    -- id of localestr that refers to this item's category
+    category TEXT
 
-    appearance_modulus INT CONSTRAINT no_divide_zero CHECK (appearance_modulus > 0),
-
-    appearance_threshold INT CONSTRAINT no_dead_items CHECK (appearance_threshold > 0)
 );
 
 CREATE TABLE IF NOT EXISTS items (
