@@ -410,3 +410,18 @@ COPY effecttypes (id) FROM stdin;
 COPY effectdefs (id, name, potential, type) FROM stdin;
 1	effect.blob_lure.name	0	1
 \.
+
+COPY stattypes (id, stat_name) FROM stdin;
+1	health
+2	attack
+3	defense
+4	speed
+5	blob_level
+\.
+
+COPY statusdefs (id, name, status_text, effect_text, removal_text, volatile, damage_per_turn, leeching, skip_chance, min_turns, max_turns, symbol) FROM stdin;
+1	Burn	NULL	is hurt by its burn!	has recovered from its burn!	FALSE	0.0625	FALSE	0	3	7	BRN
+2	Asleep	NULL	is fast asleep!	woke up!	FALSE	0	FALSE	1	1	3	SLP
+3	Confusion	is confused.	has hurt itself in confusion!	has snapped out of it!	TRUE	0.1	FALSE	0.33	1	4	NULL
+4	Infatuated	is infatuated.	cannot attack!	has snapped out of it!	TRUE	0	FALSE	0.5	1	4	NULL
+\.

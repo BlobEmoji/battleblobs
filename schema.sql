@@ -410,3 +410,62 @@ CREATE TABLE IF NOT EXISTS effects (
     -- how much 'life' this effect has left before it expires
     life INT CONSTRAINT life_clamp CHECK (life >= 0) DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS stattypes (
+    
+    id SERIAL PRIMARY KEY,
+    
+    -- id of the localestr for this stats's name
+    stat_name TEXT
+);
+
+CREATE TABLE IF NOT EXISTS statusdefs (
+
+    id SERIAL PRIMARY KEY,
+
+    -- id of the localestr for this effect's name
+    "name" TEXT,
+
+    -- the status message
+    status_text TEXT,
+
+    -- the effect message
+    effect_text TEXT,
+
+    -- the effect message after removed
+    removal_text TEXT,
+    
+    -- persists between battles
+    volatile BOOLEAN,
+
+    -- percent of health in damage taken per turn (negative if heals player)
+    damage_per_turn DOUBLE PRECISION,
+
+    -- damage dealt heals other player
+    leeching BOOLEAN,
+
+    -- chance to skip turn
+    skip_chance DOUBLE PRECISION,
+
+    -- minimum turns for effect to last
+    min_turns INT,
+
+    -- maximum turns for effect to last
+    max_turns INT,
+
+    -- Shortened form of word to add next to blob name
+    symbol TEXT
+);
+
+CREATE TABLE IF NOT EXISTS statuses (
+
+    unique_id BIGSERIAL PRIMARY KEY,
+
+    status_id INT NOT NULL REFERENCES statusdefs ON DELETE RESTRICT,
+
+    blob_id BIGINT NOT NULL REFERENCES blobs ON DELETE RESTRICT,
+
+    UNIQUE(status_id, blob_id),
+
+    current_turn INT CONSTRAINT turn_check CHECK (current_turn >= 0) DEFAULT 0
+);
