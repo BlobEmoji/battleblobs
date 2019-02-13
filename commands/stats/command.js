@@ -27,7 +27,7 @@ class Stats extends CommandBaseClass {
 
         const party = await connection.getParty(context.member);
 
-        let slot = context.content.split(" ").slice(1, 2).join(" ");
+        let slot = message.content.split(" ").slice(1, 2).join(" ");
 
         if (slot < 1 || slot > 6) {
             await context.send('Please select a blob slot between 1 and 6.');
@@ -37,7 +37,7 @@ class Stats extends CommandBaseClass {
         // values
         let blob = party[slot - 1];
 
-        let name = blob.name;
+        let name = blob.emoji_name;
         let level = blob.blob_level;
         let experience = blob.experience;
         let health = blob.health;
@@ -46,10 +46,10 @@ class Stats extends CommandBaseClass {
         let defense = blob.defense;
         let speed = blob.speed;
 
-        let move_one = await connection.getMove(blob.move_one).move_name;
-        let move_two = await connection.getMove(blob.move_two).move_name;
-        let move_three = await connection.getMove(blob.move_three).move_name;
-        let move_four = await connection.getMove(blob.move_four).move_name;
+        let move_one = (await connection.getMove(blob.move_one)).move_name;
+        let move_two = (await connection.getMove(blob.move_two)).move_name;
+        let move_three = (await connection.getMove(blob.move_three)).move_name;
+        let move_four = (await connection.getMove(blob.move_four)).move_name;
 
         // embed
         await context.send({
@@ -65,16 +65,10 @@ class Stats extends CommandBaseClass {
                         value: `Level:         ${level}\nExp:            ${experience}`
                     }, {
                         name: "\u200B",
-                        value: `HP:             ${health}/${max_health}`
-                    }, {
-                        name: "\u200B",
-                        value: `Attack:      ${attack}`
-                    }, {
-                        name: "\u200B",
-                        value: `Defense:   ${defense}`
-                    }, {
-                        name: "\u200B",
-                        value: `Speed:       ${speed}`
+                        value: `HP:\t\t\t${health}/${max_health}\n` +
+                        `Attack:\t\t\t${attack}\n`+
+                        `Defense:\t\t\t${defense}\n`+
+                        `Speed:\t\t\t${attack}\n`
                     }, {
                         name: "Attack list",
                         value: `${move_one}\n${move_two}\n${move_three}\n${move_four}`
