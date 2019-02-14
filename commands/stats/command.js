@@ -56,6 +56,8 @@ class Stats extends CommandBaseClass {
         let defense = blob.defense;
         let speed = blob.speed;
 
+        let color = parseInt(await this.healthColor(health / max_health));
+        
         let move_one = (await connection.getMove(blob.move_one));
         let move_one_pp = blob.move_one_pp;
 
@@ -99,7 +101,7 @@ class Stats extends CommandBaseClass {
         async function blobStats() {
             await stats_message.edit({
                 embed: {
-                    color: parseInt(await this.healthColor(health / max_health)),
+                    color: color,
                     title: `${context.author.username}'s ${name}`,
                     footer: {
                         text: "React - 1: Blob stats - 2: Attack stats - 3: Stop"
@@ -129,7 +131,7 @@ class Stats extends CommandBaseClass {
         async function blobAttacks() {
             await stats_message.edit({
                 embed: {
-                    color: parseInt(await this.healthColor(health / max_health)),
+                    color: color,
                     title: `${context.author.username}'s ${name}`,
                     footer: {
                         text: "React - 1: Blob stats - 2: Attack stats - 3: Stop"
