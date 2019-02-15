@@ -123,7 +123,7 @@ class Stats extends CommandBaseClass {
                         }, {
                             name: "\u200B",
                             value:
-                                `${blob.slot}\n` +
+                                `${blob.slot + 1}\n` +
                                 `${blob.blob_level}\n` +
                                 `${blob.experience}/${total_experience}\n` +
                                 `${blob.health}/${blob.vitality}\n` +
