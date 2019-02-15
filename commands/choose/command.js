@@ -21,14 +21,14 @@ class Choose extends CommandBaseClass {
         const _r = (...x) => client.localizeRandom(userData.locale, ...x);
         context.log('silly', 'got user data');
 
-        
+
         await connection.setEngaged(context.member, true);
 
         if (userData.state_engaged) {
             await context.send('You cannot do that right now.');
             return;
         }
-        
+
 
         if (await connection.isPartyEmpty(context.member) == 0) {
             if (message.content.split(' ').length == 7) {
@@ -56,6 +56,13 @@ class Choose extends CommandBaseClass {
                         blobdefs.push(temp);
                     }
                 }
+                for (let x = 0; x < blobdefs.length; x++)
+                    for (let y = 0; y < blobdefs.length; y++)
+                        if (x != y && blobdefs[x].emoji_id == blobdefs[y].emoji_id) {
+                            await context.send('You cannot have multiple of the same blob.');
+                            await connection.setEngaged(context.member, false);
+                            return;
+                        }
                 let blob_emojis = [];
                 blobdefs.forEach(function (element) {
                     let emoji;
@@ -85,9 +92,9 @@ class Choose extends CommandBaseClass {
                     for (let index = 0; index < blobdefs.length; index++) {
                         await connection.giveBlobParty(context.member, blobdefs[index], index);
                     }
-                    await context.send('Your party has been created!');       
+                    await context.send('Your party has been created!');
                 }
-                
+
             }
             else {
                 await context.send(`You need to choose six blobs to make a party.\nUsage: \`${context.prefix}choose <blobname> <blobname> <blobname> <blobname> <blobname> <blobname>\``);
