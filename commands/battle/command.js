@@ -30,6 +30,10 @@ class Battle extends CommandBaseClass {
             await context.send('You cannot do that right now.');
             return;
         }
+        if (await connection.isPartyEmpty(context.member)) {
+            await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
+            return;
+        }
 
         let player_datas = [];
         let guild_members = [];
@@ -37,12 +41,6 @@ class Battle extends CommandBaseClass {
         let party = await connection.getParty(context.member);
 
         await connection.setEngaged(context.member, true);
-
-        if (party.length != 6) {
-            await connection.setEngaged(context.member, false);
-            await context.send('You must create a party before you can start a battle.\n Try using `-choose`');
-            return;
-        }
 
         if (party.reduce(function (total, blob) { return total + blob.health; }, 0) <= 0) {
             await connection.setEngaged(context.member, false);

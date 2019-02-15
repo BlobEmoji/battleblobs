@@ -30,7 +30,7 @@ class Choose extends CommandBaseClass {
         }
 
 
-        if (await connection.isPartyEmpty(context.member) == 0) {
+        if (await connection.isPartyEmpty(context.member)) {
             if (message.content.split(' ').length == 7) {
                 let blobdefs = [];
                 let inputted_blobs = [];

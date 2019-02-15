@@ -25,7 +25,11 @@ class Party extends CommandBaseClass {
             await context.send('You cannot do that right now.');
             return;
         }
-        
+        if (await connection.isPartyEmpty(context.member)) {
+            await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
+            return;
+        }
+
         var party = await connection.getParty(context.member);
 
         var blob_emojis = [];

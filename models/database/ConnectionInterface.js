@@ -136,7 +136,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       SELECT count(*) filter(WHERE user_id = $1) as party_size
       FROM blobs           
     `, [memberData.unique_id]);
-    return resp.rows[0].party_size;
+    return (resp.rows[0].party_size == 0);
   }
 
   async updateRoamingState(member, yesNo) {

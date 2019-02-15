@@ -24,6 +24,10 @@ class Heal extends CommandBaseClass {
             await context.send('You cannot do that right now.');
             return;
         }
+        if (await connection.isPartyEmpty(context.member)) {
+            await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
+            return;
+        }
         await connection.healAllBlobs(context.member);
         await context.send('Blobs healed.');
     }

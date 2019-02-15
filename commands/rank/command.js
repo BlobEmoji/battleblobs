@@ -22,6 +22,15 @@ class Rank extends CommandBaseClass {
         context.log('silly', 'got user data');
 
 
+        if (userData.state_engaged) {
+            await context.send('You cannot do that right now.');
+            return;
+        }
+        if (await connection.isPartyEmpty(context.member)) {
+            await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
+            return;
+        }
+
         var currentRank = await connection.getRank(context.member);
         console.log('passed rank');
         var top5 = await connection.getTop5Ranks(context.member);
@@ -29,6 +38,7 @@ class Rank extends CommandBaseClass {
         var color = 0;
         var response = '';
 
+        
         top5.forEach(function (element) {
             if (element.user_id == context.author.id) {
                 response += `**${element.row_number}: <@${element.user_id}> with ${element.ranking} Blob Trophies**\n`;

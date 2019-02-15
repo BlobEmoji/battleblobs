@@ -24,10 +24,16 @@ class Stats extends CommandBaseClass {
             await context.send('You cannot do that right now.');
             return;
         }
-
+        if (await connection.isPartyEmpty(context.member)) {
+            await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
+            return;
+        }
+        
         const party = await connection.getParty(context.member);
 
         let slot = message.content.split(" ").slice(1, 2).join(" ");
+
+        
 
         if (slot < 1 || slot > 6) {
             await context.send('Please select a blob slot between 1 and 6.');
