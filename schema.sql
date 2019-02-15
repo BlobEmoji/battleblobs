@@ -190,6 +190,56 @@ CREATE TABLE IF NOT EXISTS user_data (
     accumulated_currency_milestone INT DEFAULT 0,
     currency_milestone INT DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS stattypes (
+    
+    id SERIAL PRIMARY KEY,
+    
+    -- id of the localestr for this stats's name
+    stat_name TEXT
+);
+
+CREATE TABLE IF NOT EXISTS statusdefs (
+
+    id SERIAL PRIMARY KEY,
+
+    -- id of the localestr for this effect's name
+    "name" TEXT,
+
+    -- the effect message on being added
+    addition_text TEXT,
+
+    -- the status message
+    status_text TEXT,
+
+    -- the effect message
+    effect_text TEXT,
+
+    -- the effect message after removed
+    removal_text TEXT,
+    
+    -- persists between battles
+    volatile BOOLEAN,
+
+    -- percent of health in damage taken per turn (negative if heals player)
+    damage_per_turn DOUBLE PRECISION,    
+
+    -- chance to skip turn
+    skip_chance DOUBLE PRECISION,
+
+    -- minimum turns for effect to last
+    min_turns INT,
+
+    -- maximum turns for effect to last
+    max_turns INT,
+
+    -- shortened form of word to add next to blob name
+    symbol TEXT,
+
+    -- the order this status should be used
+    "priority" INT
+);
+
+
 
 CREATE TABLE IF NOT EXISTS itemmodes (
     -- what mode this item is, this determines how the code will react to it
@@ -273,32 +323,56 @@ CREATE TABLE IF NOT EXISTS blobmoves (
     -- chance that the move will hit
     accuracy DOUBLE PRECISION,
 
-    -- the effect on the player's attack
-    attack_boost INT,
+    -- number of times the move can be used (until restored)
+    max_pp INT,
 
-    -- the effect on the player's defense
-    defense_boost INT,
+    -- the primary stat that is affected
+    stat_type1 INT REFERENCES stattypes ON DELETE RESTRICT,
+    
+    -- the effect on the stat
+    stat_boost1 INT, 
 
-    -- the effect on the player's speed
-    speed_boost INT,
+    -- the secondary stat that is affected
+    stat_type2 INT REFERENCES stattypes ON DELETE RESTRICT,
+    
+    -- the effect on the stat
+    stat_boost2 INT, 
 
-    -- the effect on the enemy's attack
-    attack_debuff INT,
+    -- the enemy's primary stat that is affected
+    enemy_stat_type1 INT REFERENCES stattypes ON DELETE RESTRICT,
+    
+    -- the effect on the enemy's stat
+    enemy_stat_debuff1 INT, 
 
-    -- the effect on the enemy's defense
-    defense_debuff INT,
-
-    -- the effect on the enemy's speed
-    speed_debuff INT,
-
+    -- the enemy's secondary stat that is affected
+    enemy_stat_type2 INT REFERENCES stattypes ON DELETE RESTRICT,
+    
+    -- the effect on the enemy's stat
+    enemy_stat_debuff2 INT, 
+    
     -- recoil percentage from move
     recoil DOUBLE PRECISION,
 
     -- inflicted status effect
-    status_effect VARCHAR(32),
+    status_effect INT REFERENCES statusdefs ON DELETE RESTRICT,
 
-    -- number of turns status takes effect
-    status_turns INT
+    -- chance to inflict status
+    status_chance DOUBLE PRECISION,
+
+    -- whether the status is applied to the blob that uses the move
+    self_status BOOLEAN,
+
+    -- any additional effect the move might have
+    additional_effect VARCHAR(32),
+
+    -- cost to learn the move from the store
+    tm_cost INT,
+
+    -- description of move
+    "description" TEXT,
+
+    -- only specific blobs can have this move
+    original_move BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS blobdefs (
@@ -360,15 +434,27 @@ CREATE TABLE IF NOT EXISTS blobs (
 
     -- id of the blob's first move
     move_one INT,
+    
+    -- current uses left of move
+    move_one_pp INT,
 
     -- id of the blob's second move
     move_two INT,
 
+    -- current uses left of move
+    move_two_pp INT,
+
     -- id of the blob's third move
     move_three INT,
+    
+    -- current uses left of move
+    move_three_pp INT,
 
     -- id of the blob's fourth move
     move_four INT,
+
+    -- current uses left of move
+    move_four_pp INT,
 
     slot INT, 
     -- time this was added to the party. parties are sorted ascending on this value,
@@ -378,6 +464,19 @@ CREATE TABLE IF NOT EXISTS blobs (
     experience BIGINT CONSTRAINT no_negative_experience CHECK (experience >= 0) DEFAULT 0,
 
     blob_level INT CONSTRAINT level_check CHECK (blob_level > 0 AND blob_level <= 100) DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS statuses (
+
+    unique_id BIGSERIAL PRIMARY KEY,
+
+    status_id INT NOT NULL REFERENCES statusdefs ON DELETE RESTRICT,
+
+    blob_id BIGINT NOT NULL REFERENCES blobs ON DELETE RESTRICT,
+
+    UNIQUE(status_id, blob_id),
+
+    current_turn INT CONSTRAINT turn_check CHECK (current_turn >= 0) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS effecttypes (
@@ -411,61 +510,3 @@ CREATE TABLE IF NOT EXISTS effects (
     life INT CONSTRAINT life_clamp CHECK (life >= 0) DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS stattypes (
-    
-    id SERIAL PRIMARY KEY,
-    
-    -- id of the localestr for this stats's name
-    stat_name TEXT
-);
-
-CREATE TABLE IF NOT EXISTS statusdefs (
-
-    id SERIAL PRIMARY KEY,
-
-    -- id of the localestr for this effect's name
-    "name" TEXT,
-
-    -- the status message
-    status_text TEXT,
-
-    -- the effect message
-    effect_text TEXT,
-
-    -- the effect message after removed
-    removal_text TEXT,
-    
-    -- persists between battles
-    volatile BOOLEAN,
-
-    -- percent of health in damage taken per turn (negative if heals player)
-    damage_per_turn DOUBLE PRECISION,
-
-    -- damage dealt heals other player
-    leeching BOOLEAN,
-
-    -- chance to skip turn
-    skip_chance DOUBLE PRECISION,
-
-    -- minimum turns for effect to last
-    min_turns INT,
-
-    -- maximum turns for effect to last
-    max_turns INT,
-
-    -- Shortened form of word to add next to blob name
-    symbol TEXT
-);
-
-CREATE TABLE IF NOT EXISTS statuses (
-
-    unique_id BIGSERIAL PRIMARY KEY,
-
-    status_id INT NOT NULL REFERENCES statusdefs ON DELETE RESTRICT,
-
-    blob_id BIGINT NOT NULL REFERENCES blobs ON DELETE RESTRICT,
-
-    UNIQUE(status_id, blob_id),
-
-    current_turn INT CONSTRAINT turn_check CHECK (current_turn >= 0) DEFAULT 0
-);
