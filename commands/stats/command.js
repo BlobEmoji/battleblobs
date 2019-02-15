@@ -28,75 +28,67 @@ class Stats extends CommandBaseClass {
             await context.send('You don\'t have a party yet. Use \`-choose\` to make one.');
             return;
         }
-        
+        await connection.setEngaged(context.member, true);
         const party = await connection.getParty(context.member);
 
-        let slot = message.content.split(" ").slice(1, 2).join(" ");
-
-        
-
-        if (slot < 1 || slot > 6) {
-            await context.send('Please select a blob slot between 1 and 6.');
-            return;
-        }
-
-        // message
-        const number_emojis = ['1⃣', '2⃣', '3⃣'];        
-
-        let stats_message = await context.send('Please select a reaction:\n1⃣ to check the blob stats, 2⃣ to check your blob\'s attacks in detail, 3⃣ to stop.');
-
-        await stats_message.react(number_emojis[0]);
-        await stats_message.react(number_emojis[1]);
-        await stats_message.react(number_emojis[2]);
 
 
         // values
-        let blob = party[slot - 1];
+        let blob;
+        let emoji;
 
-        let name = blob.emoji_name;
-        let level = blob.blob_level;
-        let experience = blob.experience;
-        let health = blob.health;
-        let max_health = blob.vitality;
-        let attack = blob.attack;
-        let defense = blob.defense;
-        let speed = blob.speed;
 
-        let color = parseInt(await this.healthColor(health / max_health));
-        
-        let move_one = (await connection.getMove(blob.move_one));
-        let move_one_pp = blob.move_one_pp;
+        let total_experience;
+        let total_ivs;
+        let color;
+        let move_one;
+        let move_two;
+        let move_three;
+        let move_four;
+        let page = -1;
+        let current_slot = 1;
 
-        let move_two = (await connection.getMove(blob.move_two));
-        let move_two_pp = blob.move_two_pp;
+        await changeBlob(parseInt(context.args));
 
-        let move_three = (await connection.getMove(blob.move_three));
-        let move_three_pp = blob.move_three_pp;
+        const emojis = ['⬅', '➡', '1⃣', '2⃣', '3⃣'];
 
-        let move_four = (await connection.getMove(blob.move_four));
-        let move_four_pp = blob.move_four_pp;
 
-        await waitUserInput();
 
+
+        const stats_message = await context.send("Loading...");
+
+        for (let i = 0; i < emojis.length; i++) {
+            await stats_message.react(emojis[i]);
+        }
+        await changeBlob();
+        await blobStats();
+
+        await connection.setEngaged(context.member, false);
 
         // Waits for a user input via reaction
         async function waitUserInput() {
             const filter = (reaction, user) => user.id === context.member.user.id;
             await stats_message.awaitReactions(filter, { max: 1, time: 120000 })
                 .then(async collected => {
-                    let reaction = collected.first();
+                    const reaction = collected.first();
                     if (!reaction) { // timed out
                         return;
                     }
                     await reaction.users.remove(context.member.user);
                     switch (reaction.emoji.name) {
-                        case number_emojis[0]: // Blob stats
+                        case emojis[0]:
+                            await changeBlob(current_slot - 1);
+                            break;
+                        case emojis[1]:
+                            await changeBlob(current_slot + 1);
+                            break;
+                        case emojis[2]: // Blob stats
                             await blobStats();
                             break;
-                        case number_emojis[1]: // Attack stats
-                            await blobAttacks(); 
+                        case emojis[3]: // Attack stats
+                            await blobAttacks();
                             break;
-                        case number_emojis[2]: // Stop
+                        case emojis[4]: // Stop
                             break;
                     }
                 })
@@ -105,26 +97,40 @@ class Stats extends CommandBaseClass {
 
         // Edits message to the blob stats
         async function blobStats() {
+            page = 0;
             await stats_message.edit({
                 embed: {
                     color: color,
-                    title: `${context.author.username}'s ${name}`,
+                    title: `${context.author.username}'s ${blob.emoji_name}`,
+                    thumbnail: {
+                        url: emoji.url
+                    },
                     footer: {
                         text: "React - 1: Blob stats - 2: Attack stats - 3: Stop"
                     },
                     fields: [
                         {
-                            name: "\u200B",
-                            value: `Level:         ${level}\nExp:            ${experience}`
+                            name: "Stats",
+                            value:
+                                `**Slot:\n` +
+                                `Level:\n` +
+                                `Exp:\n` +
+                                `HP:\n` +
+                                `Attack:\n` +
+                                `Defense:\n` +
+                                `Speed:**`,
+                            inline: true
                         }, {
                             name: "\u200B",
-                            value: `HP:\t\t\t${health}/${max_health}\n` +
-                                `Attack:\t\t\t${attack}\n` +
-                                `Defense:\t\t\t${defense}\n` +
-                                `Speed:\t\t\t${speed}\n`
-                        }, {
-                            name: "Attack list",
-                            value: `${move_one.move_name}\n${move_two.move_name}\n${move_three.move_name}\n${move_four.move_name}`
+                            value:
+                                `${blob.slot}\n` +
+                                `${blob.blob_level}\n` +
+                                `${blob.experience}/${total_experience}\n` +
+                                `${blob.health}/${blob.vitality}\n` +
+                                `${blob.attack}\n` +
+                                `${blob.defense}\n` +
+                                `${blob.speed}`,
+                            inline: true
                         }
                     ]
                 }
@@ -135,10 +141,14 @@ class Stats extends CommandBaseClass {
 
         // Edits message to the attack stats
         async function blobAttacks() {
+            page = 1;
             await stats_message.edit({
                 embed: {
                     color: color,
-                    title: `${context.author.username}'s ${name}`,
+                    title: `${context.author.username}'s ${blob.emoji_name}`,
+                    thumbnail: {
+                        url: emoji.url
+                    },
                     footer: {
                         text: "React - 1: Blob stats - 2: Attack stats - 3: Stop"
                     },
@@ -146,26 +156,26 @@ class Stats extends CommandBaseClass {
                         {
                             name: `${move_one.move_name}`,
                             value: `Power:\t\t\t${move_one.damage}\n` +
-                            `Accuracy:\t\t${(move_one.accuracy)*100}%\n` + 
-                            `PP:\t\t\t\t\t${move_one_pp}/${move_one.max_pp}\n` + 
-                            `Description:\t${move_one.description}`
+                                `Accuracy:\t\t${(move_one.accuracy) * 100}%\n` +
+                                `PP:\t\t\t\t\t${blob.move_one_pp}/${move_one.max_pp}\n` +
+                                `Description:\t${move_one.description}`
                         }, {
                             name: `${move_two.move_name}`,
                             value: `Power:\t\t\t${move_two.damage}\n` +
                                 `Accuracy:\t\t${(move_two.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${move_two_pp}/${move_two.max_pp}\n` +
+                                `PP:\t\t\t\t\t${blob.move_two_pp}/${move_two.max_pp}\n` +
                                 `Description:\t${move_two.description}`
                         }, {
                             name: `${move_three.move_name}`,
                             value: `Power:\t\t\t${move_three.damage}\n` +
                                 `Accuracy:\t\t${(move_three.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${move_three_pp}/${move_three.max_pp}\n` +
+                                `PP:\t\t\t\t\t${blob.move_three_pp}/${move_three.max_pp}\n` +
                                 `Description:\t${move_three.description}`
                         }, {
                             name: `${move_four.move_name}`,
                             value: `Power:\t\t\t${move_four.damage}\n` +
                                 `Accuracy:\t\t${(move_four.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${move_four_pp}/${move_four.max_pp}\n` +
+                                `PP:\t\t\t\t\t${blob.move_four_pp}/${move_four.max_pp}\n` +
                                 `Description:\t${move_four.description}`
                         }
                     ]
@@ -175,19 +185,47 @@ class Stats extends CommandBaseClass {
             await waitUserInput();
         }
 
-    }
-    async healthColor(amount) {
-        var a = "#ff0000" // red
-        var b = "#00ff00" // green
+        async function changeBlob(slot) {
+            if (slot < 1 || slot > 6 || isNaN(slot)) {
+                slot = current_slot;
+            }
 
-        var ah = parseInt(a.replace(/#/g, ''), 16),
-            ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-            bh = parseInt(b.replace(/#/g, ''), 16),
-            br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-            rr = ar + amount * (br - ar),
-            rg = ag + amount * (bg - ag),
-            rb = ab + amount * (bb - ab);
-        return '0x' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+            blob = party[slot - 1];
+
+            emoji = context.client.emojis.find(emoji => emoji.id == blob.emoji_id)
+
+
+            total_experience = Math.pow(blob.blob_level + 1, 3);
+            total_ivs = blob.health_iv + blob.attack_iv + blob.defense_iv + blob.speed_iv;
+            color = parseInt(await ivColor(total_ivs / (31 * 4)));
+            move_one = (await connection.getMove(blob.move_one));
+            move_two = (await connection.getMove(blob.move_two));
+            move_three = (await connection.getMove(blob.move_three));
+            move_four = (await connection.getMove(blob.move_four));
+            current_slot = slot;
+            switch (page) {
+                case 0:
+                    await blobStats();
+                    break;
+                case 1:
+                    await blobAttacks();
+                    break;
+            }
+        }
+        async function ivColor(amount) {
+            const a = "#000000" // black
+            const b = "#FCC21B" // blob color
+    
+            let ah = parseInt(a.replace(/#/g, ''), 16),
+                ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                bh = parseInt(b.replace(/#/g, ''), 16),
+                br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                rr = ar + amount * (br - ar),
+                rg = ag + amount * (bg - ag),
+                rb = ab + amount * (bb - ab);
+            return '0x' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+        }
     }
+    
 }
 module.exports = Stats;
