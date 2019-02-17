@@ -365,9 +365,6 @@ CREATE TABLE IF NOT EXISTS blobmoves (
     -- any additional effect the move might have
     additional_effect VARCHAR(32),
 
-    -- cost to learn the move from the store
-    tm_cost INT,
-
     -- description of move
     "description" TEXT,
 

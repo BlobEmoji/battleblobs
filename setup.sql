@@ -33,51 +33,51 @@ COPY statusdefs (id, name, addition_text, status_text, effect_text, removal_text
 9	Transformed	has now transformed into the enemy blob.	null	null	has transformed back into itself.	TRUE	0	0	5	5	null	1
 \.
     
-COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1, stat_type2, stat_boost2, enemy_stat_type1, enemy_stat_debuff1, enemy_stat_type2, enemy_stat_debuff2, recoil, status_effect, status_chance, self_status, additional_effect, tm_cost, description, original_move) FROM stdin;
-1	Squash	100	0.7	5	4	-2	6	0	6	0	6	0	0.2	1	0	FALSE	None	0	.	FALSE
-2	Roll	70	0.9	15	4	1	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-3	Peek	0	1	30	3	2	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-4	Bounce	90	0.75	30	4	1	6	0	6	0	6	0	0.1	1	0	FALSE	None	0	.	FALSE
-5	Wobble	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-6	Blush	0	1	30	6	0	6	0	2	2	3	2	0	1	0	FALSE	None	0	.	FALSE
-7	Melt	0	1	20	3	2	4	-3	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-8	Dance 	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-9	Think	0	1	20	2	2	3	2	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-10	Nom	80	1	25	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-11	Glare	0	1	2	6	0	6	0	3	2	4	2	0	1	0	FALSE	None	0	.	FALSE
-12	Party	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-13	Sweat	0	1	30	2	1	4	1	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-14	Pats	50	1	30	6	0	6	0	3	2	6	0	0	1	0	FALSE	None	0	.	FALSE
-15	Hammer	120	.8	5	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-16	Sing	0	1	5	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	0	.	FALSE
-17	Slash	90	0.9	25	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-18	Launch	100	0.7	5	6	0	6	0	6	0	6	0	0.3	1	0	FALSE	None	0	.	FALSE
-19	Splosion	200	1	5	6	0	6	0	6	0	6	0	1	1	0	FALSE	None	0	.	FALSE
-20	Angery	0	1	15	2	3	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-21	Kiss	0	1	15	6	0	6	0	2	2	3	2	0	5	0.5	FALSE	None	0	.	FALSE
-22	Swing	85	1	20	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-23	Torch	40	0.8	25	6	0	6	0	6	0	6	0	0	2	0.5	FALSE	None	0	.	FALSE
-24	Mail	0	1	30	6	0	6	0	6	0	6	0	0	1	0	FALSE	Swap	0	.	TRUE
-25	Hyper Think	0	1	20	2	3	4	1	6	0	6	0	0	1	0	FALSE	None	0	.	FALSE
-26	Flame Roll	80	.7	25	6	0	6	0	6	0	6	0	0	2	0.8	FALSE	None	0	.	TRUE
-27	Popcorn	0	1	15	6	0	6	0	6	0	6	0	-0.2	1	0	FALSE	None	0	.	FALSE
-28	Deny	0	1	15	6	0	6	0	6	0	6	0	0	6	1	FALSE	None	0	.	FALSE
-29	Blizzard	30	1	5	6	0	6	0	6	0	6	0	0	7	0.8	FALSE	None	0	.	TRUE
-30	Lick	40	0.6	20	6	0	6	0	6	0	6	0	0	8	0.6	FALSE	None	0	.	FALSE
-31	Yawn	0	0.5	10	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	0	.	FALSE
-32	Rest	0	1	5	6	0	6	0	6	0	6	0	-1	3	1	TRUE	None	0	.	FALSE
-33	Wob	0	1	15	6	0	6	0	3	3	6	0	0	1	0	FALSE	None	0	.	TRUE
-34	Sob	0	1	15	4	-1	6	0	3	3	6	0	0	5	0.5	FALSE	None	0	.	FALSE
-35	Thunderbolt	80	0.8	15	6	0	6	0	6	0	6	0	0	8	0.7	FALSE	None	0	.	TRUE
-36	Sips	0	1	15	4	1	6	0	6	0	6	0	-0.15	1	0	FALSE	None	0	.	FALSE
-37	Transform	0	1	5	6	0	6	0	6	0	6	0	0	9	1	TRUE	None	0	.	TRUE
-38	Cast	100	0.9	10	6	0	6	0	2	1	3	1	0	1	0	FALSE	None	0	.	TRUE
-39	Portal	0	1	15	4	3	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	TRUE
-40	Blind	0	1	15	6	0	6	0	4	3	6	0	0	1	0	FALSE	None	0	.	TRUE
-41	Perform	0	1	5	2	3	4	2	6	0	6	0	0	1	0	FALSE	None	0	.	TRUE
-42	Bolb Smash	130	0.8	10	2	2	3	2	6	0	6	0	0	4	0.7	TRUE	None	0	.	TRUE
-43	Heart Beam	60	0.7	10	6	0	6	0	6	0	6	0	0	5	0.5	FALSE	None	0	.	TRUE
-44	B4n	140	0.8	5	2	-3	6	0	6	0	6	0	0	1	0	FALSE	None	0	.	TRUE
+COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1, stat_type2, stat_boost2, enemy_stat_type1, enemy_stat_debuff1, enemy_stat_type2, enemy_stat_debuff2, recoil, status_effect, status_chance, self_status, additional_effect, description, original_move) FROM stdin;
+1	Squash	100	0.7	5	6	-2	6	0	6	0	6	0	0.2	1	0	FALSE	None	.	FALSE
+2	Roll	70	0.9	15	6	1	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+3	Peek	0	1	30	3	2	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+4	Bounce	90	0.75	30	6	1	6	0	6	0	6	0	0.1	1	0	FALSE	None	.	FALSE
+5	Wobble	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+6	Blush	0	1	30	6	0	6	0	2	2	3	2	0	1	0	FALSE	None	.	FALSE
+7	Melt	0	1	20	3	2	6	-3	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+8	Dance 	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+9	Think	0	1	20	2	2	3	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+10	Nom	80	1	25	6	0	6	0	6	0	6	0	0	1	0	FALSE	Leech	.	FALSE
+11	Glare	0	1	2	6	0	6	0	3	2	6	2	0	1	0	FALSE	None	.	FALSE
+12	Party	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+13	Sweat	0	1	30	2	1	6	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+14	Pats	50	1	30	6	0	6	0	3	2	6	0	0	1	0	FALSE	None	.	FALSE
+15	Hammer	120	0.8	5	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+16	Sing	0	1	5	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
+17	Slash	90	0.9	25	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+18	Launch	100	0.7	5	6	0	6	0	6	0	6	0	0.3	1	0	FALSE	None	.	FALSE
+19	Splosion	200	1	5	6	0	6	0	6	0	6	0	1	1	0	FALSE	None	.	FALSE
+20	Angery	0	1	15	2	3	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+21	Kiss	0	1	15	6	0	6	0	2	2	3	2	0	7	0.5	FALSE	None	.	FALSE
+22	Swing	85	1	20	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+23	Torch	40	0.8	25	6	0	6	0	6	0	6	0	0	3	0.5	FALSE	None	.	FALSE
+24	Mail	0	1	30	6	0	6	0	6	0	6	0	0	1	0	FALSE	Swap	.	TRUE
+25	Hyper Think	0	1	20	2	3	6	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+26	Flame Roll	80	0.7	25	6	0	6	0	6	0	6	0	0	3	0.8	FALSE	None	.	TRUE
+27	Popcorn	0	1	15	6	0	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
+28	Deny	0	1	15	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
+29	Blizzard	30	1	5	6	0	6	0	6	0	6	0	0	4	0.8	FALSE	None	.	TRUE
+30	Lick	40	0.6	20	6	0	6	0	6	0	6	0	0	8	0.6	FALSE	None	.	FALSE
+31	Yawn	0	0.5	10	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
+32	Rest	0	1	5	6	0	6	0	6	0	6	0	-1	3	1	TRUE	None	.	FALSE
+33	Wob	0	0.7	15	6	0	6	0	3	2	6	0	0	7	0.6	FALSE	None	.	TRUE
+34	Sob	0	1	15	6	-1	6	0	3	3	6	0	0	1	0	FALSE	None	.	FALSE
+35	Thunderbolt	80	0.8	15	6	0	6	0	6	0	6	0	0	8	0.7	FALSE	None	.	TRUE
+36	Sips	0	1	15	6	1	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
+37	Transform	0	1	5	6	0	6	0	6	0	6	0	0	9	1	TRUE	None	.	TRUE
+38	Cast	100	0.9	10	6	0	6	0	2	1	3	1	0	1	0	FALSE	None	.	TRUE
+39	Portal	0	1	15	6	3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
+40	Blind	0	1	15	6	0	6	0	6	3	6	0	0	1	0	FALSE	None	.	TRUE
+41	Perform	0	1	5	2	3	6	2	6	0	6	0	0	1	0	FALSE	None	.	TRUE
+42	Bolb Smash	130	0.8	10	2	2	3	2	6	0	6	0	0	4	0.7	TRUE	None	.	TRUE
+43	Heart Beam	60	0.7	10	6	0	6	0	6	0	6	0	0	7	0.5	FALSE	None	.	TRUE
+44	B4n	140	0.8	5	2	-3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
 \.
 
 COPY blobdefs (id, emoji_id, emoji_name, default_move_id, rarity) FROM stdin;
@@ -442,6 +442,50 @@ COPY itemdefs (id, name, value, battle_use, potential, mode, description, catego
 11	Defense Up	60	FALSE	3	5	Raises the Defense of a blob.	Medicine
 12	Speed Up	50	FALSE	4	5	Raises the Speed of a blob.	Medicine
 13	Rare Candy	100	FALSE	5	5	Raises the level of a blob by one.	Medicine
+14	TM 1: Squash	0	FALSE	1	6	Teach a blob the move: Squash	TM
+15	TM 2: Roll	0	FALSE	2	6	Teach a blob the move: Roll	TM
+16	TM 3: Peek	0	FALSE	3	6	Teach a blob the move: Peek	TM
+17	TM 4: Bounce	0	FALSE	4	6	Teach a blob the move: Bounce	TM
+18	TM 5: Wobble	0	FALSE	5	6	Teach a blob the move: Wobble	TM
+19	TM 6: Blush	0	FALSE	6	6	Teach a blob the move: Blush	TM
+20	TM 7: Melt	0	FALSE	7	6	Teach a blob the move: Melt	TM
+21	TM 8: Dance 	0	FALSE	8	6	Teach a blob the move: Dance 	TM
+22	TM 9: Think	0	FALSE	9	6	Teach a blob the move: Think	TM
+23	TM 10: Nom	0	FALSE	10	6	Teach a blob the move: Nom	TM
+24	TM 11: Glare	0	FALSE	11	6	Teach a blob the move: Glare	TM
+25	TM 12: Party	0	FALSE	12	6	Teach a blob the move: Party	TM
+26	TM 13: Sweat	0	FALSE	13	6	Teach a blob the move: Sweat	TM
+27	TM 14: Pats	0	FALSE	14	6	Teach a blob the move: Pats	TM
+28	TM 15: Hammer	0	FALSE	15	6	Teach a blob the move: Hammer	TM
+29	TM 16: Sing	0	FALSE	16	6	Teach a blob the move: Sing	TM
+30	TM 17: Slash	0	FALSE	17	6	Teach a blob the move: Slash	TM
+31	TM 18: Launch	0	FALSE	18	6	Teach a blob the move: Launch	TM
+32	TM 19: Splosion	0	FALSE	19	6	Teach a blob the move: Splosion	TM
+33	TM 20: Angery	0	FALSE	20	6	Teach a blob the move: Angery	TM
+34	TM 21: Kiss	0	FALSE	21	6	Teach a blob the move: Kiss	TM
+35	TM 22: Swing	0	FALSE	22	6	Teach a blob the move: Swing	TM
+36	TM 23: Torch	0	FALSE	23	6	Teach a blob the move: Torch	TM
+37	TM 24: Mail	0	FALSE	24	6	Teach a blob the move: Mail	TM
+38	TM 25: Hyper Think	0	FALSE	25	6	Teach a blob the move: Hyper Think	TM
+39	TM 26: Flame Roll	0	FALSE	26	6	Teach a blob the move: Flame Roll	TM
+40	TM 27: Popcorn	0	FALSE	27	6	Teach a blob the move: Popcorn	TM
+41	TM 28: Deny	0	FALSE	28	6	Teach a blob the move: Deny	TM
+42	TM 29: Blizzard	0	FALSE	29	6	Teach a blob the move: Blizzard	TM
+43	TM 30: Lick	0	FALSE	30	6	Teach a blob the move: Lick	TM
+44	TM 31: Yawn	0	FALSE	31	6	Teach a blob the move: Yawn	TM
+45	TM 32: Rest	0	FALSE	32	6	Teach a blob the move: Rest	TM
+46	TM 33: Wob	0	FALSE	33	6	Teach a blob the move: Wob	TM
+47	TM 34: Sob	0	FALSE	34	6	Teach a blob the move: Sob	TM
+48	TM 35: Thunderbolt	0	FALSE	35	6	Teach a blob the move: Thunderbolt	TM
+49	TM 36: Sips	0	FALSE	36	6	Teach a blob the move: Sips	TM
+50	TM 37: Transform	0	FALSE	37	6	Teach a blob the move: Transform	TM
+51	TM 38: Cast	0	FALSE	38	6	Teach a blob the move: Cast	TM
+52	TM 39: Portal	0	FALSE	39	6	Teach a blob the move: Portal	TM
+53	TM 40: Blind	0	FALSE	40	6	Teach a blob the move: Blind	TM
+54	TM 41: Perform	0	FALSE	41	6	Teach a blob the move: Perform	TM
+55	TM 42: Bolb Smash	0	FALSE	42	6	Teach a blob the move: Bolb Smash	TM
+56	TM 43: Heart Beam	0	FALSE	43	6	Teach a blob the move: Heart Beam	TM
+57	TM 44: B4n	0	FALSE	44	6	Teach a blob the move: B4n	TM
 \.
 
 COPY effecttypes (id) FROM stdin;
