@@ -20,66 +20,13 @@ class Turn {
                 break;
             case this.controller.ActionType.RUN:
                 await this.controller.battle_message.log(`${this.player.name} has forfeited the battle!`)
-                await this.controller.endGame(turn, false);
+                await this.controller.endGame(this.controller.players[turn], false);
                 return;
                 break;
         }
     }
-    async checkFaintStatus(player_number) {
-        this.controller.players.forEach(p => p.party.forEach(x => x.health = x.health < 0 ? 0 : x.health));
-        let ret_val = false;
-        if (this.controller.players[Math.abs(player_number - 1)].selected_blob.health <= 0) {
-            await this.controller.interuptActions();
-        }
-        if (this.controller.players[1].selected_blob.health <= 0 && !(await this.controller.players[1].isPlayer())) {
-            // bot blob faints
-            let temp = this.controller.players[1].selected_blob;
-            let gained_exp = Math.ceil(((Math.random() * 50) + 50) * temp.blob_level / 5 * Math.pow(2 * temp.blob_level + 10, 2.5) / Math.pow(temp.blob_level + this.controller.players[0].selected_blob.blob_level + 10, 2.5) + 1);
-            let total_exp = parseInt((await this.controller.connection.giveBlobExperience(this.controller.players[0].selected_blob, gained_exp)).experience);
-            if (Math.floor(Math.cbrt(total_exp)) > this.controller.players[0].selected_blob.blob_level) {
-                let new_blob = await this.player.copyBattleStats(this.controller.players[0].selected_blob, await this.controller.connection.getBlob((await this.controller.connection.setBlobLevel(this.controller.players[0].selected_blob, Math.floor(Math.cbrt(total_exp)))).unique_id));
-                this.controller.players[0].party[this.controller.players[0].selected_blob.slot] = new_blob;
-                this.controller.players[0].selected_blob = new_blob;
-                await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} has gained ${gained_exp} exp. (0 more exp to level up)`)
-                await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} is now level ${this.controller.players[0].selected_blob.blob_level}!`, true);
-            }
-            else {
-                await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} has gained ${gained_exp} exp. (${Math.pow(this.controller.players[0].selected_blob.blob_level + 1, 3) - total_exp} more exp to level up)`, true, 1500)
-            }
-            if (this.controller.players[1].party.every(x => x.health === 0)) {
-                await this.controller.endGame(1);
-                return true;
-            }
-            this.controller.players[1].selected_blob = this.controller.players[1].party.find(x => x.health > 0);
-            await this.controller.battle_message.log(`${this.controller.players[1].name} sent out ${this.controller.players[1].selected_blob.emoji_name}!`, true);
-            ret_val = true;
-        }
-
-        if (this.controller.players[player_number].selected_blob.health <= 0 && await this.controller.players[player_number].isPlayer()) {
-            // current blob faints
-            await this.controller.battle_message.log(`${this.controller.players[player_number].name}'s ${this.controller.players[player_number].selected_blob.emoji_name} has fainted.`, true, 2000);
-            if (!this.controller.players[player_number].party.some(x => x.health > 0)) {
-                await this.controller.endGame(player_number);
-                return true;
-            }
-            await this.controller.players[player_number].blobMenu(await this.controller.battle_message.switchBlobMenu(this.controller.players[player_number]));
-            ret_val = true;
-        }
-
-        if (this.controller.players[Math.abs(player_number - 1)].selected_blob.health <= 0 && (await this.controller.players[Math.abs(player_number - 1)].isPlayer())) {
-            // enemy blob faints
-            await this.controller.battle_message.log(`${this.controller.players[Math.abs(player_number - 1)].name}'s ${this.controller.players[Math.abs(player_number - 1)].selected_blob.emoji_name} has fainted.`, true, 2000);
-            if (!this.controller.players[Math.abs(player_number - 1)].party.some(x => x.health > 0)) {
-                await this.controller.endGame(Math.abs(player_number - 1));
-                return true;
-            }
-            await this.controller.players[Math.abs(player_number - 1)].blobMenu(await this.controller.battle_message.switchBlobMenu(this.controller.players[Math.abs(player_number - 1)]));
-            ret_val = true;
-        }
-        return ret_val;
-    }
-    async useMove(move, player_number) {
-        let blobs = [this.controller.players[player_number].selected_blob, this.controller.players[Math.abs(player_number - 1)].selected_blob]
+    async useMove(move, player) {
+        let blobs = [player.selected_blob, player.opponent.selected_blob]
         let prefixes = []
         if (move == null) {
             // struggle
@@ -102,7 +49,7 @@ class Turn {
                 additional_effect: 'None'
             };
         }
-        if (player_number == 0) {
+        if (player == this.controller.players[0]) {
             prefixes.push('+');
             prefixes.push('-');
         }
@@ -110,7 +57,7 @@ class Turn {
             prefixes.push('-');
             prefixes.push('+');
         }
-        let attack_ability = await this.processStatusEffects(blobs, prefixes, player_number);
+        let attack_ability = await this.processStatusEffects(blobs, prefixes, player);
 
         if (!attack_ability.can_attack)
             return;
@@ -189,7 +136,7 @@ class Turn {
                 [move.stat_type2, move.stat_boost2]
             ];
         }
-        if (await this.checkFaintStatus(player_number))
+        if (await this.checkFaintStatus(player))
             return;
 
 
@@ -234,7 +181,7 @@ class Turn {
         await this.controller.battle_message.log(`${prefixes[1]} ${blobs[1].emoji_name} ${effect.addition_text}`, true);
         return;
     }
-    async processStatusEffects(blobs, prefixes, player_number) {
+    async processStatusEffects(blobs, prefixes, player) {
 
         let attack_ability = { can_attack: true, attack_power: 1 };
         for (let i = 0; i < blobs[0].statuses.length; i++) {
@@ -290,9 +237,8 @@ class Turn {
 
             }
 
-            if (await this.checkFaintStatus(player_number))
+            if (await this.checkFaintStatus(player))
                 return;
-
             
 
         }

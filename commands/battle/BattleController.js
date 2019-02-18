@@ -33,6 +33,8 @@ class BattleController {
         else {
             this.players.push(new UserPlayer(this, this.guild_members[1], this.player_datas[1]))
         }
+        await this.players[0].setOpponent(this.players[1]);
+        await this.players[1].setOpponent(this.players[0]);        
         await this.players[1].getParty(this.players[0]);
         await this.battle_message.setup();
         await this.play();
@@ -68,7 +70,7 @@ class BattleController {
                 break;
             case this.ActionType.RUN:
                 if (this.action_queue[1].type == this.ActionType.RUN) {
-                    await this.endGame(-1);
+                    await this.endGame(null);
                     return;
                 }
                 player_first = 0;
@@ -93,7 +95,7 @@ class BattleController {
     async interuptActions() {
         this.action_queue = [];
     }
-    async endGame(loser_number, fair = true) {
+    async endGame(player, fair = true) {
         this.game_over = true;
         this.action_queue = [];
         if (fair) {
@@ -102,22 +104,24 @@ class BattleController {
             });
         }
         else {
-            this.players[loser_number].destroy(true);
-            this.players[Math.abs(loser_number - 1)].destroy(false);
+            player.destroy(true);
+            player.opponent.destroy(false);
         }
-        if (loser_number == -1) {
+        if (player == null) {
             // Draw
             await this.battle_message.log(`The battle has ended in a tie.`, true);
 
         }
         else {
-            await this.battle_message.log(`${this.players[loser_number].name} has lost to ${this.players[Math.abs(loser_number - 1)].name}.`, true);
-            await this.calculateReward(Math.abs(loser_number - 1));
+            await this.battle_message.log(`${player.name} has lost to ${player.opponent.name}.`, true);
+            await this.calculateReward(player.opponent);
         }
 
     }
-    async calculateReward(player_won_number) {
+    async calculateReward(player) {
         let trophies_awards = [0, 0];
+
+        player_won_number = (player == this.players[0] ? 0 : 1);
 
         if (!(await this.players[1].isPlayer()) && player_won_number == 0) {
             let reward_money = Math.max(10, this.players[1].total_worth - this.players[0].total_worth);

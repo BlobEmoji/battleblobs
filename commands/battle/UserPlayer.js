@@ -22,6 +22,37 @@ class UserPlayer extends Player {
         return user_party;
     }
 
+    async checkFaintStatus(player) {
+        this.controller.players.forEach(p => p.party.forEach(x => x.health = x.health < 0 ? 0 : x.health));
+        let ret_val = false;
+        if (player.opponent.selected_blob.health <= 0) {
+            await this.controller.interuptActions();
+        }
+        
+        if (player.selected_blob.health <= 0 && await player.isPlayer()) {
+            // current blob faints
+            await this.controller.battle_message.log(`${player.name}'s ${player.selected_blob.emoji_name} has fainted.`, true, 2000);
+            if (!player.party.some(x => x.health > 0)) {
+                await this.controller.endGame(player);
+                return true;
+            }
+            await player.blobMenu(await this.controller.battle_message.switchBlobMenu(player));
+            ret_val = true;
+        }
+
+        if (player.opponent.selected_blob.health <= 0 && (await player.opponent.isPlayer())) {
+            // enemy blob faints
+            await this.controller.battle_message.log(`${player.opponent.name}'s ${player.opponent.selected_blob.emoji_name} has fainted.`, true, 2000);
+            if (!player.opponent.party.some(x => x.health > 0)) {
+                await this.controller.endGame(player.opponent);
+                return true;
+            }
+            await player.opponent.blobMenu(await this.controller.battle_message.switchBlobMenu(player.opponent));
+            ret_val = true;
+        }
+        return ret_val;
+    }
+
     async playTurn(turn = null) {
         if (turn == null) {
             return await this.moveMenu(await this.controller.battle_message.showMoveMenu());
@@ -36,7 +67,7 @@ class UserPlayer extends Player {
         let reaction = await this.controller.battle_message.awaitReactions(filter, { max: 1, time: 120000 });
         if (!reaction) {      
             await this.controller.battle_message.log('The battle has timed out.', true);
-            await this.controller.endGame(this.controller.current_turn);
+            await this.controller.endGame(this.controller.players[this.controller.current_turn]);
             return null;
         }
         

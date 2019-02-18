@@ -39,6 +39,36 @@ class BotPlayer extends Player {
         return bot_party;
     }
 
+    async checkFaintStatus(player) {
+        this.controller.players.forEach(p => p.party.forEach(x => x.health = x.health < 0 ? 0 : x.health));
+        let ret_val = false;
+        if (player.opponent.selected_blob.health <= 0) {
+            await this.controller.interuptActions();
+        }
+
+        // bot blob faints
+        let temp = this.controller.players[1].selected_blob;
+        let gained_exp = Math.ceil(((Math.random() * 50) + 50) * temp.blob_level / 5 * Math.pow(2 * temp.blob_level + 10, 2.5) / Math.pow(temp.blob_level + this.controller.players[0].selected_blob.blob_level + 10, 2.5) + 1);
+        let total_exp = parseInt((await this.controller.connection.giveBlobExperience(this.controller.players[0].selected_blob, gained_exp)).experience);
+        if (Math.floor(Math.cbrt(total_exp)) > this.controller.players[0].selected_blob.blob_level) {
+            let new_blob = await this.player.copyBattleStats(this.controller.players[0].selected_blob, await this.controller.connection.getBlob((await this.controller.connection.setBlobLevel(this.controller.players[0].selected_blob, Math.floor(Math.cbrt(total_exp)))).unique_id));
+            this.controller.players[0].party[this.controller.players[0].selected_blob.slot] = new_blob;
+            this.controller.players[0].selected_blob = new_blob;
+            await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} has gained ${gained_exp} exp. (0 more exp to level up)`)
+            await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} is now level ${this.controller.players[0].selected_blob.blob_level}!`, true);
+        }
+        else {
+            await this.controller.battle_message.log(`${this.controller.players[0].selected_blob.emoji_name} has gained ${gained_exp} exp. (${Math.pow(this.controller.players[0].selected_blob.blob_level + 1, 3) - total_exp} more exp to level up)`, true, 1500)
+        }
+        if (this.controller.players[1].party.every(x => x.health === 0)) {
+            await this.controller.endGame(1);
+            return true;
+        }
+        this.controller.players[1].selected_blob = this.controller.players[1].party.find(x => x.health > 0);
+        await this.controller.battle_message.log(`${this.controller.players[1].name} sent out ${this.controller.players[1].selected_blob.emoji_name}!`, true);
+        ret_val = true;
+    }
+
     async playTurn() {
         const moves = [
             this.selected_blob.move_one,
