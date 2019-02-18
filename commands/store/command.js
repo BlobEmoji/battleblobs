@@ -287,6 +287,9 @@ class Store extends CommandBaseClass {
                     title: 'Shop',
                     description: `Select an item to display more information.⠀⠀⠀⠀⠀⠀\n${item_list} \nPage ${page}/${max_pages}`,
                     color: 16768768,
+                    thumbnail: {
+                        url: 'https://cdn.discordapp.com/attachments/542422265254641674/547137981841014785/BattleBlobsShop.png'
+                    },
                     footer: {
                         icon_url: context.member.user.avatarURL(),
                         text: `${context.member.user.username}'s BlobCoins: ${userData.currency}`
