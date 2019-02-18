@@ -259,6 +259,14 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     `, [memberData.unique_id]);
     return resp.rows;
   }
+  async getUserItemCount(member, item_id) {
+    const memberData = await this.memberData(member);
+    const resp = await this.query(`
+      SELECT count(*) filter(WHERE user_id = $1::BIGINT AND item_id = $2::INT) as item_count
+      FROM items
+    `, [memberData.unique_id, item_id]);
+    return resp.rows[0].item_count;
+  }
   async giveBlobExperience(blob, exp) {
     const resp = await this.query(`
     UPDATE blobs
