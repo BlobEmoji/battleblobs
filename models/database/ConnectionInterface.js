@@ -272,9 +272,9 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     UPDATE blobs
     SET experience = blobs.experience + $2
     WHERE unique_id = $1
-    RETURNING *
+    RETURNING experience
     `, [blob.unique_id, exp]);
-    return resp.rows[0];
+    return parseInt(resp.rows[0].experience);
   }
   async setBlobLevel(blob, level) {
     const resp = await this.query(`

@@ -22,6 +22,43 @@ class UserPlayer extends Player {
         return user_party;
     }
 
+
+
+    async checkBlobFainted() {
+        this.party.forEach(x => x.health = x.health < 0 ? 0 : x.health);
+        if (this.selected_blob.health <= 0) {
+            await this.controller.battle_message.log(`${this.name}'s ${this.selected_blob.emoji_name} has fainted.`, true, 2000);
+            if (!(await this.checkPartyFainted()))
+                await this.blobMenu(await this.controller.battle_message.switchBlobMenu(this));
+            return true;
+        }
+    }
+    async giveExperience(amount) {
+        this.selected_blob.experience = await this.controller.connection.giveBlobExperience(this.selected_blob, amount);
+        let remaining_exp = Math.max(0, Math.pow(this.selected_blob.blob_level + 1, 3) - this.selected_blob.experience);
+        
+        await this.controller.battle_message.log(`${this.selected_blob.emoji_name} has gained ${amount} exp. (${remaining_exp} more exp to level up)`, true, 1500);
+        
+        if (remaining_exp === 0)
+            await this.levelUp();
+    }
+    async levelUp() {
+        const new_level = Math.floor(Math.cbrt(this.selected_blob.experience));
+        const num_levels = new_level - this.selected_blob.blob_level;
+        
+        let new_blob = await this.copyBattleStats(
+            this.selected_blob,
+            await this.controller.connection.getBlob((await this.controller.connection.setBlobLevel(this.selected_blob, new_level)).unique_id)
+        );
+
+        this.party[this.selected_blob.slot] = new_blob;
+        this.selected_blob = new_blob;
+
+        for (let i = num_levels - 1; i >= 0; i--) {
+            await this.controller.battle_message.log(`${this.selected_blob.emoji_name} is now level ${this.selected_blob.blob_level - i}!`, true, 2000);
+        }
+
+    }
     async playTurn(turn = null) {
         if (turn == null) {
             return await this.moveMenu(await this.controller.battle_message.showMoveMenu());
@@ -32,14 +69,14 @@ class UserPlayer extends Player {
         let temp_reaction = await this.controller.battle_message.addReaction(this.controller.number_emojis[4]);
 
         const filter = (reaction, user) => user.id === this.guild_member.user.id;
-        
+
         let reaction = await this.controller.battle_message.awaitReactions(filter, { max: 1, time: 120000 });
-        if (!reaction) {      
+        if (!reaction) {
             await this.controller.battle_message.log('The battle has timed out.', true);
-            await this.controller.endGame(this.controller.current_turn);
+            await this.controller.endGame(this.controller.players[this.controller.current_turn]);
             return null;
         }
-        
+
         await reaction.users.remove(this.guild_member.user);
 
         if (this.controller.number_emojis.some((x, i) => reaction.emoji.name === x && i < 4 && moves[i].pp === 0)) {
@@ -103,12 +140,12 @@ class UserPlayer extends Player {
         }
     }
     async blobMenu(reactions) {
-        let valid_reactions = reactions.valid_reactions; 
+        let valid_reactions = reactions.valid_reactions;
         let temp_reaction = reactions.temp_reaction;
-        
+
         const filter = (reaction, user) => user.id === this.guild_member.user.id;
         let reaction = await this.controller.battle_message.awaitReactions(filter, { max: 1, time: 120000 })
-        
+
         if (!reaction) {
             this.selected_blob = this.party[valid_reactions[0]];
             return;
