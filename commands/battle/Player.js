@@ -18,12 +18,15 @@ class Player {
     async isPlayer() {
         throw new Error('Unimplemented method: isPlayer');
     }
+    async checkBlobFainted() {
+        throw new Error('Unimplemented method: checkBlobFainted');
+    }
+    async checkPartyFainted() {
+        return !this.party.some(x => x.health > 0);
+    }
     async setOpponent(player) {
         this.opponent = player;
     } 
-    async checkFaintStatus(player) {
-        throw new Error('Unimplemented method: checkFaintStatus');
-    }
     async copyBattleStats(oldblob, newblob) {
         newblob.cur_stats = oldblob.cur_stats;
         newblob.stages = oldblob.stages;
