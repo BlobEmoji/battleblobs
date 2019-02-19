@@ -34,19 +34,19 @@ COPY statusdefs (id, name, addition_text, status_text, effect_text, removal_text
 \.
     
 COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1, stat_type2, stat_boost2, enemy_stat_type1, enemy_stat_debuff1, enemy_stat_type2, enemy_stat_debuff2, recoil, status_effect, status_chance, self_status, additional_effect, description, original_move) FROM stdin;
-1	Squash	100	0.7	5	6	-2	6	0	6	0	6	0	0.2	1	0	FALSE	None	.	FALSE
-2	Roll	70	0.9	15	6	1	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+1	Squash	100	0.7	15	4	-2	6	0	6	0	6	0	0.2	1	0	FALSE	None	.	FALSE
+2	Roll	70	0.9	15	4	1	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 3	Peek	0	1	30	3	2	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
-4	Bounce	90	0.75	30	6	1	6	0	6	0	6	0	0.1	1	0	FALSE	None	.	FALSE
-5	Wobble	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+4	Bounce	90	0.75	30	4	1	6	0	6	0	6	0	0.1	1	0	FALSE	None	.	FALSE
+5	Wobble	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 6	Blush	0	1	30	6	0	6	0	2	2	3	2	0	1	0	FALSE	None	.	FALSE
-7	Melt	0	1	20	3	2	6	-3	6	0	6	0	0	1	0	FALSE	None	.	FALSE
-8	Dance 	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+7	Melt	0	1	20	3	2	4	-3	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+8	Dance 	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 9	Think	0	1	20	2	2	3	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 10	Nom	80	1	25	6	0	6	0	6	0	6	0	0	1	0	FALSE	Leech	.	FALSE
-11	Glare	0	1	2	6	0	6	0	3	2	6	2	0	1	0	FALSE	None	.	FALSE
-12	Party	0	1	20	2	2	6	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
-13	Sweat	0	1	30	2	1	6	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+11	Glare	0	1	20	6	0	6	0	3	2	4	2	0	1	0	FALSE	None	.	FALSE
+12	Party	0	1	20	2	2	4	2	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+13	Sweat	0	1	30	2	1	4	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 14	Pats	50	1	30	6	0	6	0	3	2	6	0	0	1	0	FALSE	None	.	FALSE
 15	Hammer	120	0.8	5	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 16	Sing	0	1	5	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
@@ -58,24 +58,24 @@ COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1
 22	Swing	85	1	20	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 23	Torch	40	0.8	25	6	0	6	0	6	0	6	0	0	3	0.5	FALSE	None	.	FALSE
 24	Mail	0	1	30	6	0	6	0	6	0	6	0	0	1	0	FALSE	Swap	.	TRUE
-25	Hyper Think	0	1	20	2	3	6	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
+25	Hyper Think	0	1	20	2	3	4	1	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 26	Flame Roll	80	0.7	25	6	0	6	0	6	0	6	0	0	3	0.8	FALSE	None	.	TRUE
 27	Popcorn	0	1	15	6	0	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
-28	Deny	0	1	15	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
-29	Blizzard	30	1	5	6	0	6	0	6	0	6	0	0	4	0.8	FALSE	None	.	TRUE
+28	Deny	0	1	15	6	0	6	0	6	0	6	0	0	6	1	FALSE	None	.	FALSE
+29	Blizzard	30	1	5	6	0	6	0	6	0	6	0	0	7	0.8	FALSE	None	.	TRUE
 30	Lick	40	0.6	20	6	0	6	0	6	0	6	0	0	8	0.6	FALSE	None	.	FALSE
 31	Yawn	0	0.5	10	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
 32	Rest	0	1	5	6	0	6	0	6	0	6	0	-1	3	1	TRUE	None	.	FALSE
 33	Wob	0	0.7	15	6	0	6	0	3	2	6	0	0	7	0.6	FALSE	None	.	TRUE
-34	Sob	0	1	15	6	-1	6	0	3	3	6	0	0	1	0	FALSE	None	.	FALSE
+34	Sob	0	1	15	4	-1	6	0	3	3	6	0	0	1	0	FALSE	None	.	FALSE
 35	Thunderbolt	80	0.8	15	6	0	6	0	6	0	6	0	0	8	0.7	FALSE	None	.	TRUE
-36	Sips	0	1	15	6	1	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
+36	Sips	0	1	15	4	1	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
 37	Transform	0	1	5	6	0	6	0	6	0	6	0	0	9	1	TRUE	None	.	TRUE
 38	Cast	100	0.9	10	6	0	6	0	2	1	3	1	0	1	0	FALSE	None	.	TRUE
-39	Portal	0	1	15	6	3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
-40	Blind	0	1	15	6	0	6	0	6	3	6	0	0	1	0	FALSE	None	.	TRUE
-41	Perform	0	1	5	2	3	6	2	6	0	6	0	0	1	0	FALSE	None	.	TRUE
-42	Bolb Smash	130	0.8	10	2	2	3	2	6	0	6	0	0	4	0.7	TRUE	None	.	TRUE
+39	Portal	0	1	15	4	3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
+40	Blind	0	1	15	6	0	6	0	4	3	6	0	0	1	0	FALSE	None	.	TRUE
+41	Perform	0	1	5	2	3	4	2	6	0	6	0	0	1	0	FALSE	None	.	TRUE
+42	Bolb Smash	130	0.8	10	2	2	3	2	6	0	6	0	0	6	0.7	TRUE	None	.	TRUE
 43	Heart Beam	60	0.7	10	6	0	6	0	6	0	6	0	0	7	0.5	FALSE	None	.	TRUE
 44	B4n	140	0.8	5	2	-3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
 \.
