@@ -384,10 +384,10 @@ CREATE TABLE IF NOT EXISTS blobdefs (
     emoji_name VARCHAR(32),
 
     -- the move ID of its default move
-    default_move_id INT, 
+    default_move_id INT DEFAULT 0, 
 
     -- rarity of this blob
-    rarity INT NOT NULL REFERENCES blobrarity ON DELETE RESTRICT
+    rarity INT NOT NULL REFERENCES blobrarity ON DELETE RESTRICT DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS blobs (
