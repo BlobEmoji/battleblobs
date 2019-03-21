@@ -1,0 +1,44 @@
+
+token: MyT0k3N.G0eS.1nTHiSFi3Ld
+
+db:
+  user: 'postgres'
+  host: 'db'
+  database: ''
+  password: ''
+  port: 5432
+
+logging:
+  console: verbose
+  file: info
+
+emojis:
+  coin_emoji: '<:blobcoin:386670804865384458>'
+  gray_one: '<:grayone:558069287433142281>'
+  gray_two: '<:graytwo:558069287323959307>'
+  gray_three: '<:graythree:558069287504445479>'
+  gray_four: '<:grayfour:558069287982727198>'
+  gray_five: '<:grayfive:558069287755972608>'
+  gray_six: '<:graysix:558069287688863783>'
+
+
+admins:
+  - '69198249432449024'  # FrostLuma#0001  /gh/FrostLuma
+  - '203300837928206337'  # Xenthys#0001  /gh/Xenthys
+  - '122122926760656896'  # devon#4089  /gh/Gorialis
+  - '248245568004947969'  # Zeboto#0001 /gh/Zeboto
+
+roles:
+  # hierarchy
+  maker: '300510738026463232'
+  artisan: '298993418577903616'
+  lite: '300509002520068097'
+  council: '294928463536586754'
+  police: '295476842935353345'
+  boss: '290295853124550657'
+  blobot: '292388383823495168'
+  # restrictions
+  notalk: '289494296703533058'
+  noupload: '315316327415808003'
+  noreact: '358105816852856833'
+  nosuggest: '312775821335199754'
