@@ -12,6 +12,14 @@ class BattleController {
         this.player_datas = player_datas;
         this.battle_message = new BattleMessage(battle_message, this);
         this.number_emojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣'];
+        this.disabled_number_emojis = [
+            context.client.config.emojis.gray_one,
+            context.client.config.emojis.gray_two,
+            context.client.config.emojis.gray_three,
+            context.client.config.emojis.gray_four,
+            context.client.config.emojis.gray_five,
+            context.client.config.emojis.gray_six
+        ]
         this.current_turn = 0;
         this.battle_log = '';
         this.menu_buttons = [];

@@ -48,7 +48,7 @@ class BattleMessage {
 
         for (let index = 0; index < player.party.length; index++) {
             await fields_array.push({
-                name: this.controller.number_emojis[index] + player.party[index].emoji,
+                name: (player.party[index].health <= 0 ? this.controller.disabled_number_emojis[index] : this.controller.number_emojis[index]) + player.party[index].emoji,
                 value: `\`${'█'.repeat(Math.max(0, player.party[index].health) / player.party[index].vitality * 10) + '-'.repeat(10 - Math.max(0, player.party[index].health) / player.party[index].vitality * 10)}\` ${Math.max(0, player.party[index].health)}/${player.party[index].vitality} Lv. ${player.party[index].blob_level}`,
                 inline: true
             });
