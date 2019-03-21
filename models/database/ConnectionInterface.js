@@ -651,6 +651,33 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const resp = await this.query(`SELECT * FROM statusdefs`);
     return resp.rows;
   }
+  async getStatuses(blob) {
+    const resp = await this.query(`
+    SELECT * FROM statuses 
+    WHERE blob_id = $1::BIGINT AND active = TRUE`, [blob.unique_id]);
+    return resp.rows;
+  }
+  async updateStatus(status) {
+    const resp = await this.query(`
+    UPDATE statuses
+    SET current_turn = $2::INT,
+    active = $3::BOOLEAN
+    WHERE unique_id = $1::BIGINT
+    RETURNING *
+    `, [status.unique_id, status.current_turn, status.active]);
+    return resp.rows;
+  }
+  async addStatus(blob, status) {
+    const resp = await this.query(`
+    INSERT INTO statuses (status_id, blob_id, current_turn, active)
+    VALUES (
+      $1::BIGINT,
+      $2::BIGINT,
+      $3::INT,
+      TRUE
+    )
+    `, [status.unique_id, blob.unique_id, status.current_turn]);
+  }
 }
 
 module.exports = ConnectionInterface;

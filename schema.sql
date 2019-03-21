@@ -473,7 +473,9 @@ CREATE TABLE IF NOT EXISTS statuses (
 
     UNIQUE(status_id, blob_id),
 
-    current_turn INT CONSTRAINT turn_check CHECK (current_turn >= 0) DEFAULT 0
+    current_turn INT CONSTRAINT turn_check CHECK (current_turn >= 0) DEFAULT 0,
+
+    active BOOLEAN 
 );
 
 CREATE TABLE IF NOT EXISTS effecttypes (
