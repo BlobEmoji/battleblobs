@@ -92,22 +92,22 @@ class Store extends CommandBaseClass {
             let store_item;
             switch (item.mode) {
                 case 1:
-                    store_item = new PotionItem(connection, item);
+                    store_item = new PotionItem(context, item);
                     break;
                 case 2:
-                    store_item = new PercentagePotionItem(connection, item);
+                    store_item = new PercentagePotionItem(context, item);
                     break;
                 case 3:
-                    store_item = new ReviveItem(connection, item);
+                    store_item = new ReviveItem(context, item);
                     break;
                 case 4:
-                    store_item = new StatusHealItem(connection, item);
+                    store_item = new StatusHealItem(context, item);
                     break;
                 case 5:
-                    store_item = new StatUpItem(connection, item);
+                    store_item = new StatUpItem(context, item);
                     break;
                 case 6:
-                    store_item = new TmItem(connection, item);
+                    store_item = new TmItem(context, item);
                     break;
             }
             let fields = await store_item.getFields();

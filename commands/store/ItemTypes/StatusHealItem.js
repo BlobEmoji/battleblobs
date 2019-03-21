@@ -1,7 +1,7 @@
 const StoreItem = require('../StoreItem.js')
 class StatusHealItem extends StoreItem {
-    constructor(connection, item) {
-        super(connection, item);
+    constructor(context, item) {
+        super(context, item);
     }
     async getFields() {
         const status_name = (await this.connection.getStatusTypes())[this.item.potential - 1].name;

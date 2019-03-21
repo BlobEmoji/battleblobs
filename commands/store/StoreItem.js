@@ -1,7 +1,8 @@
 
 class StoreItem {
-    constructor(connection, item) {
-        this.connection = connection;
+    constructor(context, item) {
+        this.context = context;
+        this.connection = context.connection;
         this.item = item;
     }
     async getFields() {
@@ -13,7 +14,7 @@ class StoreItem {
             }, 
             {
                 name: 'Price',
-                value: this.item.value + '<:blobcoin:386670804865384458>',
+                value: this.item.value + this.context.client.config.emojis.coin_emoji,
                 inline: true
             }, 
             {

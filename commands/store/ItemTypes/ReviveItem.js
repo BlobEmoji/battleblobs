@@ -1,7 +1,7 @@
 const StoreItem = require('../StoreItem.js')
 class ReviveItem extends StoreItem {
-    constructor(connection, item) {
-        super(connection, item);
+    constructor(context, item) {
+        super(context, item);
     }
     async getFields() {
         let fields = await super.getFields();

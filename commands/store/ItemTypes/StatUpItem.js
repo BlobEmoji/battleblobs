@@ -1,7 +1,7 @@
 const StoreItem = require('../StoreItem.js')
 class StatUpItem extends StoreItem {
-    constructor(connection, item) {
-        super(connection, item);
+    constructor(context, item) {
+        super(context, item);
     }
     async getFields() {
         const stat_name = (await this.connection.getStatTypes())[this.item.potential - 1].stat_name;

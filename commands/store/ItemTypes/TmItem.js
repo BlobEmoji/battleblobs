@@ -1,7 +1,7 @@
 const StoreItem = require('../StoreItem.js')
 class TmItem extends StoreItem {
-    constructor(connection, item) {
-        super(connection, item);
+    constructor(context, item) {
+        super(context, item);
         this.move = null;
     }
     async getFields() {
