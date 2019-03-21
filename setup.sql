@@ -54,7 +54,7 @@ COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1
 18	Launch	100	0.7	5	6	0	6	0	6	0	6	0	0.3	1	0	FALSE	None	.	FALSE
 19	Splosion	200	1	5	6	0	6	0	6	0	6	0	1	1	0	FALSE	None	.	FALSE
 20	Angery	0	1	15	2	3	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
-21	Kiss	0	1	15	6	0	6	0	2	2	3	2	0	7	0.5	FALSE	None	.	FALSE
+21	Kiss	0	1	15	6	0	6	0	2	2	3	2	0	5	0.5	FALSE	None	.	FALSE
 22	Swing	85	1	20	6	0	6	0	6	0	6	0	0	1	0	FALSE	None	.	FALSE
 23	Torch	40	0.8	25	6	0	6	0	6	0	6	0	0	3	0.5	FALSE	None	.	FALSE
 24	Mail	0	1	30	6	0	6	0	6	0	6	0	0	1	0	FALSE	Swap	.	TRUE
@@ -66,7 +66,7 @@ COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1
 30	Lick	40	0.6	20	6	0	6	0	6	0	6	0	0	8	0.6	FALSE	None	.	FALSE
 31	Yawn	0	0.5	10	6	0	6	0	6	0	6	0	0	3	1	FALSE	None	.	FALSE
 32	Rest	0	1	5	6	0	6	0	6	0	6	0	-1	3	1	TRUE	None	.	FALSE
-33	Wob	0	0.7	15	6	0	6	0	3	2	6	0	0	7	0.6	FALSE	None	.	TRUE
+33	Wob	0	0.7	15	6	0	6	0	3	2	6	0	0	5	0.6	FALSE	None	.	TRUE
 34	Sob	0	1	15	4	-1	6	0	3	3	6	0	0	1	0	FALSE	None	.	FALSE
 35	Thunderbolt	80	0.8	15	6	0	6	0	6	0	6	0	0	8	0.7	FALSE	None	.	TRUE
 36	Sips	0	1	15	4	1	6	0	6	0	6	0	-0.2	1	0	FALSE	None	.	FALSE
@@ -76,7 +76,7 @@ COPY blobmoves (id, move_name, damage, accuracy, max_pp, stat_type1, stat_boost1
 40	Blind	0	1	15	6	0	6	0	4	3	6	0	0	1	0	FALSE	None	.	TRUE
 41	Perform	0	1	5	2	3	4	2	6	0	6	0	0	1	0	FALSE	None	.	TRUE
 42	Bolb Smash	130	0.8	10	2	2	3	2	6	0	6	0	0	6	0.7	TRUE	None	.	TRUE
-43	Heart Beam	60	0.7	10	6	0	6	0	6	0	6	0	0	7	0.5	FALSE	None	.	TRUE
+43	Heart Beam	60	0.7	10	6	0	6	0	6	0	6	0	0	5	0.5	FALSE	None	.	TRUE
 44	B4n	140	0.8	5	2	-3	6	0	6	0	6	0	0	1	0	FALSE	None	.	TRUE
 \.
 
