@@ -56,13 +56,13 @@ class ConnectionInterface extends ConnectionInterfaceBase {
         last_acked_location = last_moved_location AS roaming_effect
       FROM final_query, parse_location(final_query.location), parse_state(final_query."state"), guild_table
     `, [
-        member.guild.id,
-        member.guild.name,
-        member.user.id,
-        member.user.username,
-        member.user.discriminator,
-        member.user.bot
-      ]);
+      member.guild.id,
+      member.guild.name,
+      member.user.id,
+      member.user.username,
+      member.user.discriminator,
+      member.user.bot
+    ]);
 
     if (resp.rows[0] && !resp.rows[0].updated)
       // user has just been created, supply 5 basic balls
@@ -136,7 +136,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       SELECT count(*) filter(WHERE user_id = $1) as party_size
       FROM blobs           
     `, [memberData.unique_id]);
-    return (resp.rows[0].party_size == 0);
+    return (resp.rows[0].party_size === 0);
   }
 
   async updateRoamingState(member, yesNo) {
@@ -301,36 +301,36 @@ class ConnectionInterface extends ConnectionInterfaceBase {
   }
 
   async generateMoveSet(blobDef) {
-    let moves = [];
-    let move_list = (await this.query(
-      `SELECT * FROM blobmoves WHERE original_move = FALSE`)).rows;
-    let attack_move_list = (await this.query(
-      `SELECT * FROM blobmoves WHERE damage > 0 AND damage < 200 AND original_move = FALSE`)).rows;
-    let original_move_list = (await this.query(
-      `SELECT * FROM blobmoves WHERE original_move = TRUE`)).rows;
+    const moves = [];
+    const move_list = (await this.query(
+      'SELECT * FROM blobmoves WHERE original_move = FALSE')).rows;
+    const attack_move_list = (await this.query(
+      'SELECT * FROM blobmoves WHERE damage > 0 AND damage < 200 AND original_move = FALSE')).rows;
+    const original_move_list = (await this.query(
+      'SELECT * FROM blobmoves WHERE original_move = TRUE')).rows;
     let move;
 
     // default move
-    if (blobDef.default_move_id == 0) {
+    if (blobDef.default_move_id === 0) {
       move = move_list.splice(Math.floor(Math.random() * move_list.length), 1)[0];
     }
     else {
-      if (move_list.findIndex(x => x.id == blobDef.default_move_id) != -1) {
-        move = move_list.splice(move_list.findIndex(x => x.id == blobDef.default_move_id), 1)[0];
+      if (move_list.findIndex(x => x.id === blobDef.default_move_id) !== -1) {
+        move = move_list.splice(move_list.findIndex(x => x.id === blobDef.default_move_id), 1)[0];
       }
       else {
-        move = original_move_list.find(x => x.id == blobDef.default_move_id);
+        move = original_move_list.find(x => x.id === blobDef.default_move_id);
       }
     }
-    let attack_move_index = attack_move_list.findIndex(x => x.id == move.id);
-    if (attack_move_index != -1) {
+    const attack_move_index = attack_move_list.findIndex(x => x.id === move.id);
+    if (attack_move_index !== -1) {
       attack_move_list.splice(attack_move_index, 1);
     }
     moves.push(move);
 
     // attack move
     move = attack_move_list.splice(Math.floor(Math.random() * attack_move_list.length), 1)[0];
-    move_list.splice(move_list.findIndex(x => x.id == move.id), 1);
+    move_list.splice(move_list.findIndex(x => x.id === move.id), 1);
     moves.push(move);
 
     // any move
@@ -375,23 +375,23 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       FROM stat_info
       RETURNING *
     `, [
-        memberData.unique_id,
-        blobDef.id,
-        addToParty,
-        await this.randomizedIV(),
-        await this.randomizedIV(),
-        await this.randomizedIV(),
-        await this.randomizedIV(),
-        moves[0].id,
-        moves[0].max_pp,
-        moves[1].id,
-        moves[1].max_pp,
-        moves[2].id,
-        moves[2].max_pp,
-        moves[3].id,
-        moves[3].max_pp,
-        slot
-      ]);
+      memberData.unique_id,
+      blobDef.id,
+      addToParty,
+      await this.randomizedIV(),
+      await this.randomizedIV(),
+      await this.randomizedIV(),
+      await this.randomizedIV(),
+      moves[0].id,
+      moves[0].max_pp,
+      moves[1].id,
+      moves[1].max_pp,
+      moves[2].id,
+      moves[2].max_pp,
+      moves[3].id,
+      moves[3].max_pp,
+      slot
+    ]);
     return resp.rows[0];
   }
 
@@ -399,7 +399,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const resp = await this.query(`
       SELECT * FROM blobdefs WHERE emoji_name = $1      
     `, [blobName]);
-    if (resp.rows[0] == undefined) {
+    if (resp.rows[0] === undefined) {
       return false;
     }
     return resp.rows[0];
@@ -415,7 +415,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     return resp.rows[0];
   }
   async updateBlob(blob) {
-    let new_blob = [
+    const new_blob = [
       blob.unique_id,
       blob.blob_id,
       blob.vitality,
@@ -434,7 +434,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       blob.slot,
       blob.experience,
       blob.blob_level,
-    ]
+    ];
     const resp = await this.query(`
     UPDATE blobs
     SET blob_id = $2::BIGINT,
@@ -475,7 +475,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     return resp.rows[0];
   }
   async healAllBlobs(member) {
-    const memberData = await this.memberData(member);
+    await this.memberData(member);
     const blobs = await this.getParty(member);
     for (let i = 0; i < blobs.length; i++) {
       await this.healBlob(blobs[i]);
@@ -489,7 +489,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       await this.getMove(blob.move_three),
       await this.getMove(blob.move_four)
     ];
-    const resp = await this.query(`
+    await this.query(`
     UPDATE blobs
     SET
     health = $2::INT,
@@ -523,9 +523,9 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       WITH rank_table AS (
-        SELECT unique_id, \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
+        SELECT unique_id, "user" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
         ranking DESC,
-        \"user\" DESC)
+        "user" DESC)
       FROM user_data
       WHERE guild = $2)
       SELECT row_number, user_id, ranking
@@ -539,9 +539,9 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       WITH rank_table AS (
-        SELECT \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
+        SELECT "user" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
         ranking DESC,
-        \"user\" DESC)
+        "user" DESC)
       FROM user_data
       WHERE guild = $1)
       SELECT row_number, user_id, ranking
@@ -556,9 +556,9 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     const memberData = await this.memberData(member);
     const resp = await this.query(`
       WITH rank_table AS (
-        SELECT unique_id, \"user\" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
+        SELECT unique_id, "user" as user_id, ranking, ROW_NUMBER () OVER (ORDER BY
         ranking DESC,
-        \"user\" DESC)
+        "user" DESC)
       FROM user_data
       WHERE guild = $1)
       SELECT row_number, user_id, ranking
@@ -643,12 +643,12 @@ class ConnectionInterface extends ConnectionInterfaceBase {
   }
 
   async getStatTypes() {
-    const resp = await this.query(`SELECT stat_name FROM stattypes`);
+    const resp = await this.query('SELECT stat_name FROM stattypes');
     return resp.rows;
   }
 
   async getStatusTypes() {
-    const resp = await this.query(`SELECT * FROM statusdefs`);
+    const resp = await this.query('SELECT * FROM statusdefs');
     return resp.rows;
   }
   async getStatuses(blob) {
@@ -668,7 +668,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     return resp.rows;
   }
   async addStatus(blob, status) {
-    const resp = await this.query(`
+    await this.query(`
     INSERT INTO statuses (status_id, blob_id, current_turn, active)
     VALUES (
       $1::BIGINT,
