@@ -164,6 +164,15 @@ CREATE TABLE IF NOT EXISTS user_data (
     -- player ranking among players
     ranking INT CONSTRAINT ranking_check CHECK (ranking >= 0) DEFAULT 0,
 
+    -- progress on collecting gym badges
+    trainer_card_progress BIT(8) DEFAULT B'00000000',
+    
+    -- gym badge type (gym leader only)
+    gym_badge INT DEFAULT 0, 
+
+    -- is the player a gym leader
+    gym_leader BOOLEAN DEFAULT false,
+
     -- user state
     -- check parse_state for definitions
     "state" BIT(16) DEFAULT B'0000000000000000',
@@ -189,6 +198,8 @@ CREATE TABLE IF NOT EXISTS user_data (
     search_count_milestone INT DEFAULT 0,
     accumulated_currency_milestone INT DEFAULT 0,
     currency_milestone INT DEFAULT 0
+
+    
 );
 CREATE TABLE IF NOT EXISTS stattypes (
     
@@ -384,7 +395,7 @@ CREATE TABLE IF NOT EXISTS blobdefs (
     emoji_name VARCHAR(32),
 
     -- the move ID of its default move
-    default_move_id INT DEFAULT 0, 
+    default_move_id BIGINT DEFAULT 0, 
 
     -- rarity of this blob
     rarity INT NOT NULL REFERENCES blobrarity ON DELETE RESTRICT DEFAULT 1

@@ -311,7 +311,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
     let move;
 
     // default move
-    if (blobDef.default_move_id === 0) {
+    if (blobDef.default_move_id === '0') {
       move = move_list.splice(Math.floor(Math.random() * move_list.length), 1)[0];
     }
     else {
