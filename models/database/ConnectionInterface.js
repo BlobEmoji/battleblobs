@@ -92,7 +92,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
         sqlListing.push(`$${index + 2}`);
         argumentListing.push(blobID);
       });
-
+      
       // remove all blobs from party that aren't in this list
       await this.query(`
         UPDATE blobs
@@ -136,7 +136,7 @@ class ConnectionInterface extends ConnectionInterfaceBase {
       SELECT count(*) filter(WHERE user_id = $1) as party_size
       FROM blobs           
     `, [memberData.unique_id]);
-    return (resp.rows[0].party_size === 0);
+    return (resp.rows[0].party_size === '0');
   }
 
   async updateRoamingState(member, yesNo) {
