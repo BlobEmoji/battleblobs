@@ -1,0 +1,135 @@
+
+meta:
+  # name of the bot. appears in embed footers, etc
+  # don't translate this, or do, i don't mind
+  battleblobs: |
+    BattleBlobs
+
+  help:
+    no_category: |
+      Sem Categoria
+    command_header: |
+      Lista de Comandos
+
+    categories:
+      admin: |
+        Administração
+      meta: |
+        Meta
+      battleblobs: |
+        BattleBlobs
+
+    commands:
+      # help strings for various commands
+      help: |
+        Mostra comandos disponívels para você.
+      eval: |
+        Executa código JS arbitrário.
+      ping: |
+        Calcula a conexão do robô em tempo de ida e volta.
+      locale: |
+        Muda a linguagem do robô.
+      choose: |
+        Escolhe o seu time com os blobs que você escolheu.
+      battle: |
+        Começa uma batalha de blobs contra um robô ou uma pessoa.
+      heal: |
+        Cura todos os blobs até a vida máxima.
+      inventory: |
+        Mostra o conteúdo do seu inventário.
+      party: |
+        Mostra a sua equipe de blobs e o estado deles.
+      rank: |
+        Mostra a tabela de liderança e aonde você está.
+      stats: |
+        Mostra a sua equipe de blobs com informações detalhadas.
+      store: |
+        Mostra a loja com um menu para comprar mais itens.
+      use: |
+        Usa um item do seu inventário.
+
+commands:
+  # strings used in commands
+  general:
+    error:
+      engaged: |
+        Você não pode fazer isso agora.
+      partyless: |
+        Você não tem uma equipe ainda. Use `{PREFIX}choose <nome do blob> <nome do blob> <nome do blob> <nome do blob> <nome do blob> <nome do blob>` para fazer um.
+  locale:
+    none: |
+      Você deve fornecer o nome da linguagem.
+    same: |
+      Você já definiu para essa linguagem.
+    notfound: |
+      A linguagem não foi encontrada.
+    changed: |
+      A linguagem do servidor foi mudada. Use `{PREFIX}locale <nome>` a qualquer momento para mudar de volta.
+  battle:
+    error:
+      all_blobs_fainted: |
+        Você não tem nenhum blob com condições de batalhar.
+      battling_yourself: |
+        Você não pode batalhar contra você mesmo.
+      target_engaged: |
+        Esse jogador está ocupado
+      target_partyless: |
+        Esse usuário não criou nenhuma equipe ainda.
+      target_blobs_fainted: |
+        Esse usuário não tem nenhum blob com condições de batalhar.
+    battle_starting: |
+      Começando a batalha...
+    battle_invite: |
+      <@{TARGET}>, {USER} te desafia em uma batalha!
+      `{PREFIX}accept` ou `{PREFIX}decline`
+  choose:
+    error:
+      non_existent_blob: |
+        Um desses blobs não existe.
+      duplicated_blob: |
+        Você não pode ter mais de um blob igual.
+      six_blobs_required: |
+        Você precisa escolher seis blobs para formar uma equipe.
+        Uso: `{PREFIX}choose <nome do blob> <nome do blob> <nome do blob> <nome do blob> <nome do blob> <nome do blob>`
+      cant_change_party: |
+        Você não pode mudar a sua equipe.
+    choose_prompt: |
+      Seus blobs escolhidos:
+      {BLOBS}
+      Você não vai poder mudar-la depois. `{PREFIX}confirm` ou `{PREFIX}cancel`
+    party_created: |
+      Sua equipe foi criada!
+  heal:
+    blobs_healed:
+      Blobs curado.
+  party:
+    stats_command: |
+      {PREFIX}stats [lote] para ver estatísticas individuais.
+    party_title: |
+      Equipe de {USER}
+  rank:
+    response: |
+      **{PLACE}: <@{USERID}> com {TROPHIES} Troféis de Blob**
+
+    last_rank_response: |
+      **{PLACE}: <@{USERID}> com {TROPHIES} Troféis de Blob**    
+  stats:
+    loading: |
+      Loading...
+    title: |
+      {BLOB} de {USER}
+    blob_stats: |
+      **Lote:
+      Nível:
+      Exp:
+      Vida:
+      Ataque:
+      Defesa:
+      Velocidade:**
+    attack_stats: |
+      Poder:       {DAMAGE}
+      Precisão:    {ACCURACY}%
+      PP:          {PP}/{MAXPP}
+      Descrição:   {DESCRIPTION}
+    footer: |
+      Reaja - 1: Estatísticas do blob - 2: Estatísticas de ataque - 3: Pare

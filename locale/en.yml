@@ -23,22 +23,39 @@ meta:
       # help strings for various commands
       help: |
         Displays commands available to you.
-      meta: |
-        Displays info on the bot's current status.
       eval: |
         Executes arbitrary JS code.
       ping: |
         Calculates the bot connection round-trip time.
       locale: |
-        Changes the bot locale.      
-
+        Changes the bot locale.
       choose: |
-        Choose your team.
-      
-
+        Chooses your party with the blobs you picked.
+      battle: |
+        Starts a blob battle against a bot or a person.
+      heal: |
+        Heals all blobs to maximum health.
+      inventory: |
+        Displays your inventory's content.
+      party: |
+        Displays your blob party and their status.
+      rank: |
+        Displays the leaderboard and where you are in.
+      stats: |
+        Displays your blob party with detailed information.
+      store: |
+        Displays the store with a menu to buy more items.
+      use: |
+        Uses an item from your inventory.
 
 commands:
-  # strings used in commands  
+  # strings used in commands
+  general:
+    error:
+      engaged: |
+        You cannot do that right now.
+      partyless: |
+        You don't have a party yet. Use `{PREFIX}choose <blobname> <blobname> <blobname> <blobname> <blobname> <blobname>` to make one.
   locale:
     none: |
       You must supply a locale name.
@@ -48,6 +65,71 @@ commands:
       That locale couldn't be found.
     changed: |
       The guild locale has been changed. Use `{PREFIX}locale <name>` at any time to change back.
-
-  
-
+  battle:
+    error:
+      all_blobs_fainted: |
+        You do not have any blobs in battling condition.
+      battling_yourself: |
+        You cannot battle yourself.
+      target_engaged: |
+        That player is busy.
+      target_partyless: |
+        That user has not created a party yet.
+      target_blobs_fainted: |
+        That user does not have any blobs in battling condition.
+    battle_starting: |
+      Battle starting...
+    battle_invite: |
+      <@{TARGET}>, {USER} has challenged you to a battle!
+      `{PREFIX}accept` or `{PREFIX}decline`
+  choose:
+    error:
+      non_existent_blob: |
+        One of those blobs does not exist.
+      duplicated_blob: |
+        You cannot have multiple of the same blob.
+      six_blobs_required: |
+        You need to choose six blobs to make a party.
+        Usage: `{PREFIX}choose <blobname> <blobname> <blobname> <blobname> <blobname> <blobname>`
+      cant_change_party: |
+        You cannot change your party.
+    choose_prompt: |
+      Your chosen blobs:
+      {BLOBS}
+      You will not be able to change them later. `{PREFIX}confirm` or `{PREFIX}cancel`
+    party_created: |
+      Your party has been created!
+  heal:
+    blobs_healed: |
+      Blobs healed.
+  party:
+    stats_command: |
+      {PREFIX}stats [slot] to view individual statistics
+    party_title: |
+      {USER}'s Party
+  rank:
+    response: |
+      **{PLACE}: <@{USERID}> with {TROPHIES} Blob Trophies**
+      
+    last_rank_response: |
+      **{PLACE}: <@{USERID}> with {TROPHIES} Blob Trophies**
+  stats:
+    loading: |
+      Loading...
+    title: |
+      {USER}'s {BLOB}
+    blob_stats: |
+      **Slot:
+      Level:
+      Exp:
+      HP:
+      Attack:
+      Defense:
+      Speed:**
+    attack_stats: |
+      Power:       {DAMAGE}
+      Accuracy:    {ACCURACY}%
+      PP:          {PP}/{MAXPP}
+      Description: {DESCRIPTION}
+    footer: |
+      React - 1: Blob stats - 2: Attack stats - 3: Stop

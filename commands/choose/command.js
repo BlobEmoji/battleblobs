@@ -13,17 +13,18 @@ class Choose extends CommandBaseClass {
   }
 
   async run(context) {
-    const { message, connection } = context;
+    const { client, message, connection } = context;
 
     context.log('silly', 'acquiring user data for search..');
     const userData = await connection.memberData(context.member);
+    const _ = (...x) => client.localize(userData.locale, ...x);
     context.log('silly', 'got user data');
 
 
     await connection.setEngaged(context.member, true);
 
     if (userData.state_engaged) {
-      await context.send('You cannot do that right now.');
+      await context.send(_('commands.general.error.engaged'));
       return;
     }
 
@@ -41,12 +42,12 @@ class Choose extends CommandBaseClass {
         });
 
         for (const element of inputted_blobs) {
-          if (element === '-choose') {
+          if (element === `${context.prefix}choose`) {
             continue;
           }
           const temp = await connection.searchBlob(element);
           if (!temp) {
-            await context.send('One of those blobs does not exist.');
+            await context.send(_('commands.choose.error.non_existent_blob'));
             await connection.setEngaged(context.member, false);
             return;
           }
@@ -57,7 +58,7 @@ class Choose extends CommandBaseClass {
         for (let x = 0; x < blobdefs.length; x++)
           for (let y = 0; y < blobdefs.length; y++)
             if (x !== y && blobdefs[x].emoji_id === blobdefs[y].emoji_id) {
-              await context.send('You cannot have multiple of the same blob.');
+              await context.send(_('commands.choose.error.duplicated_blob'));
               await connection.setEngaged(context.member, false);
               return;
             }
@@ -73,8 +74,7 @@ class Choose extends CommandBaseClass {
           }
         });
 
-        await context.send('Your chosen blobs:\n' + blob_emojis.join(' ')
-                    + `\nYou will not be able to change them later. \`${context.prefix}confirm\` or \`${context.prefix}cancel\``);
+        await context.send(_('commands.choose.choose_prompt', { BLOBS: blob_emojis.join(' '), PREFIX: context.prefix }));
 
         const re = new RegExp(`^(?:${context.client.prefixRegex})(confirm|cancel)(.*)$`);
         const filter = m => (m.author.id === context.author.id && re.test(m.content));
@@ -83,23 +83,23 @@ class Choose extends CommandBaseClass {
           response = re.exec((await context.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })).first().content);
         } catch (e) {
           await connection.setEngaged(context.member, false);
-          // user didnt respond                   
+          // user didnt respond
           return;
         }
         if (response[1] === 'confirm') {
           for (let index = 0; index < blobdefs.length; index++) {
             await connection.giveBlobParty(context.member, blobdefs[index], index);
           }
-          await context.send('Your party has been created!');
+          await context.send(_('commands.choose.party_created'));
         }
 
       }
       else {
-        await context.send(`You need to choose six blobs to make a party.\nUsage: \`${context.prefix}choose <blobname> <blobname> <blobname> <blobname> <blobname> <blobname>\``);
+        await context.send(_('commands.choose.error.six_blobs_required', { PREFIX: context.prefix }));
       }
     }
     else {
-      await context.send('You cannot change your party.');
+      await context.send(_('commands.choose.error.cant_change_party'));
     }
     await connection.setEngaged(context.member, false);
   }

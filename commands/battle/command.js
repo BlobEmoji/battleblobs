@@ -16,20 +16,21 @@ class Battle extends CommandBaseClass {
   }
 
   async run(context) {
-    const { connection } = context;
+    const { client, connection } = context;
 
 
 
     context.log('silly', 'acquiring user data for search..');
     const userData = await connection.memberData(context.member);
+    const _ = (...x) => client.localize(userData.locale, ...x);
 
     context.log('silly', 'got user data');
     if (userData.state_engaged) {
-      await context.send('You cannot do that right now.');
+      await context.send(_('commands.general.error.engaged'));
       return;
     }
     if (await connection.isPartyEmpty(context.member)) {
-      await context.send('You don\'t have a party yet. Use `-choose` to make one.');
+      await context.send(_('commands.general.error.partyless', { PREFIX: context.prefix }));
       return;
     }
 
@@ -42,7 +43,7 @@ class Battle extends CommandBaseClass {
 
     if (party.reduce(function(total, blob) { return total + blob.health; }, 0) <= 0) {
       await connection.setEngaged(context.member, false);
-      await context.send('You do not have any blobs in battling condition.');
+      await context.send(_('commands.battle.error.all_blobs_fainted'));
       return;
     }
     guild_members.push(context.member);
@@ -58,35 +59,37 @@ class Battle extends CommandBaseClass {
       const enemy_party = await connection.getParty(target_member);
       if (target_member.user.id === context.member.user.id) {
         await connection.setEngaged(context.member, false);
-        await context.send('You cannot battle yourself.');
+        await context.send(_('commands.battle.error.battling_yourself'));
         return;
       }
       if (targetData.state_engaged) {
         await connection.setEngaged(context.member, false);
-        await context.send('That player is busy.');
+        await context.send(_('commands.battle.error.target_engaged'));
         return;
       }
+
       if (enemy_party.length !== 6) {
         await connection.setEngaged(context.member, false);
-        await context.send('That user has not created a party yet.');
+        await context.send(_('commands.battle.error.target_partyless'));
         return;
       }
       if (enemy_party.reduce(function(total, blob) { return total + blob.health; }, 0) <= 0) {
         await connection.setEngaged(context.member, false);
-        await context.send('That user does not have any blobs in battling condition.');
+        await context.send(_('commands.battle.error.target_blobs_fainted'));
         return;
       }
       guild_members.push(target_member);
       player_datas.push(targetData);
+      const _t = (...x) => client.localize(targetData.locale, ...x);
       await connection.setEngaged(target_member, true);
-      await context.send(`${target_member}, ${context.member.user.username} has challenged you to a battle!\n\`${context.prefix}accept\` or \`${context.prefix}decline\``);
+      await context.send(_t('commands.battle.battle_invite', { TARGET: target_member, USER: context.member.user.username, PREFIX: context.prefix }));
       const re = new RegExp(`^(?:${context.client.prefixRegex})(accept|decline)(.*)$`);
       const filter = m => (m.author.id === target_member.id && re.test(m.content));
       let response;
       try {
         response = re.exec((await context.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })).first().content);
       } catch (e) {
-        // user didnt respond                   
+        // user didnt respond
         await connection.setEngaged(context.member, false);
         await connection.setEngaged(target_member, false);
         return;
@@ -96,43 +99,13 @@ class Battle extends CommandBaseClass {
         await connection.setEngaged(target_member, false);
         return;
       }
-            
+
     }
 
 
-    const battle_message = await context.send('Battle starting...');
+    const battle_message = await context.send(_('commands.battle.battle_starting'));
     const controller = new BattleController(context, connection, guild_members, player_datas, battle_message);
     await controller.setup();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   }
 }
