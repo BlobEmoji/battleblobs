@@ -13,18 +13,19 @@ class Party extends CommandBaseClass {
   }
 
   async run(context) {
-    const { connection } = context;
+    const { client, connection } = context;
 
     context.log('silly', 'acquiring user data for search..');
     const userData = await connection.memberData(context.member);
+    const _ = (...x) => client.localize(userData.locale, ...x);
     context.log('silly', 'got user data');
 
     if (userData.state_engaged) {
-      await context.send('You cannot do that right now.');
+      await context.send(_('commands.general.error.engaged'));
       return;
     }
     if (await connection.isPartyEmpty(context.member)) {
-      await context.send('You don\'t have a party yet. Use `-choose` to make one.');
+      await context.send(_('commands.general.error.partyless'), { PREFIX: context.prefix });
       return;
     }
 
@@ -33,7 +34,7 @@ class Party extends CommandBaseClass {
     var blob_emojis = [];
     var cur_total_health = 0;
     var total_health = 0;
-        
+
     party.forEach(function(element) {
       var emoji = context.client.emojis.find(emoji => emoji.id === element.emoji_id);
       if (emoji) {
@@ -62,9 +63,9 @@ class Party extends CommandBaseClass {
     await context.send({
       embed: {
         color: parseInt(await this.healthColor(cur_total_health / total_health)),
-        title: `${context.author.username}'s Party`,
+        title: _('commands.party.party_title', { USER: context.author.username }),
         footer: {
-          text: '-stats [slot] to view individual statistics'
+          text: _('commands.party.stats_command', { PREFIX: context.prefix })
         },
         fields: fields_array
       }

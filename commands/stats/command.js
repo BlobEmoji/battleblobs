@@ -12,18 +12,19 @@ class Stats extends CommandBaseClass {
   }
 
   async run(context) {
-    const { connection } = context;
+    const { client, connection } = context;
 
     context.log('silly', 'acquiring user data for search..');
     const userData = await connection.memberData(context.member);
+    const _ = (...x) => client.localize(userData.locale, ...x);
     context.log('silly', 'got user data');
 
     if (userData.state_engaged) {
-      await context.send('You cannot do that right now.');
+      await context.send(_('commands.general.error.engaged'));
       return;
     }
     if (await connection.isPartyEmpty(context.member)) {
-      await context.send('You don\'t have a party yet. Use `-choose` to make one.');
+      await context.send(_('commands.general.error.partyless'), { PREFIX: context.prefix });
       return;
     }
     await connection.setEngaged(context.member, true);
@@ -53,7 +54,7 @@ class Stats extends CommandBaseClass {
 
 
 
-    const stats_message = await context.send('Loading...');
+    const stats_message = await context.send(_('commands.stats.loading'));
 
     for (let i = 0; i < emojis.length; i++) {
       await stats_message.react(emojis[i]);
@@ -99,24 +100,17 @@ class Stats extends CommandBaseClass {
       await stats_message.edit({
         embed: {
           color: color,
-          title: `${context.author.username}'s ${blob.emoji_name}`,
+          title: _('commands.stats.title', { USER: context.author.username, BLOB: blob.emoji_name}),
           thumbnail: {
             url: emoji.url
           },
           footer: {
-            text: 'React - 1: Blob stats - 2: Attack stats - 3: Stop'
+            text: _('commands.stats.footer')
           },
           fields: [
             {
               name: 'Stats',
-              value:
-                                '**Slot:\n' +
-                                'Level:\n' +
-                                'Exp:\n' +
-                                'HP:\n' +
-                                'Attack:\n' +
-                                'Defense:\n' +
-                                'Speed:**',
+              value: _('commands.stats.blob_stats'),
               inline: true
             }, {
               name: '\u200B',
@@ -143,38 +137,50 @@ class Stats extends CommandBaseClass {
       await stats_message.edit({
         embed: {
           color: color,
-          title: `${context.author.username}'s ${blob.emoji_name}`,
+          title: _('commands.stats.title', { USER: context.author.username, BLOB: blob.emoji_name}),
           thumbnail: {
             url: emoji.url
           },
           footer: {
-            text: 'React - 1: Blob stats - 2: Attack stats - 3: Stop'
+            text: _('commands.stats.footer')
           },
           fields: [
             {
               name: `${move_one.move_name}`,
-              value: `Power:\t\t\t${move_one.damage}\n` +
-                                `Accuracy:\t\t${(move_one.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${blob.move_one_pp}/${move_one.max_pp}\n` +
-                                `Description:\t${move_one.description}`
+              value: _('commands.stats.attack_stats', {
+                DAMAGE: move_one.damage,
+                ACCURACY: (move_one.accuracy) * 100,
+                PP: blob.move_one_pp,
+                MAXPP: move_one.max_pp,
+                DESCRIPTION: move_one.description}
+              ),
             }, {
               name: `${move_two.move_name}`,
-              value: `Power:\t\t\t${move_two.damage}\n` +
-                                `Accuracy:\t\t${(move_two.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${blob.move_two_pp}/${move_two.max_pp}\n` +
-                                `Description:\t${move_two.description}`
+              value: _('commands.stats.attack_stats', {
+                DAMAGE: move_two.damage,
+                ACCURACY: (move_two.accuracy) * 100,
+                PP: blob.move_two_pp,
+                MAXPP: move_two.max_pp,
+                DESCRIPTION: move_two.description}
+              ),
             }, {
               name: `${move_three.move_name}`,
-              value: `Power:\t\t\t${move_three.damage}\n` +
-                                `Accuracy:\t\t${(move_three.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${blob.move_three_pp}/${move_three.max_pp}\n` +
-                                `Description:\t${move_three.description}`
+              value: _('commands.stats.attack_stats', {
+                DAMAGE: move_three.damage,
+                ACCURACY: (move_three.accuracy) * 100,
+                PP: blob.move_three_pp,
+                MAXPP: move_three.max_pp,
+                DESCRIPTION: move_three.description}
+              ),
             }, {
               name: `${move_four.move_name}`,
-              value: `Power:\t\t\t${move_four.damage}\n` +
-                                `Accuracy:\t\t${(move_four.accuracy) * 100}%\n` +
-                                `PP:\t\t\t\t\t${blob.move_four_pp}/${move_four.max_pp}\n` +
-                                `Description:\t${move_four.description}`
+              value: _('commands.stats.attack_stats', {
+                DAMAGE: move_four.damage,
+                ACCURACY: (move_four.accuracy) * 100,
+                PP: blob.move_four_pp,
+                MAXPP: move_four.max_pp,
+                DESCRIPTION: move_four.description}
+              ),
             }
           ]
         }
@@ -213,7 +219,7 @@ class Stats extends CommandBaseClass {
     async function ivColor(amount) {
       const a = '#000000'; // black
       const b = '#FCC21B'; // blob color
-    
+
       const ah = parseInt(a.replace(/#/g, ''), 16),
         ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
         bh = parseInt(b.replace(/#/g, ''), 16),
@@ -224,6 +230,6 @@ class Stats extends CommandBaseClass {
       return '0x' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     }
   }
-    
+
 }
 module.exports = Stats;

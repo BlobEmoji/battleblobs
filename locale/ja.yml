@@ -23,8 +23,6 @@ meta:
       # help strings for various commands
       help: |
         どのコマンドが使えらえるか表示する
-      meta: |
-        ボットの操作情報を表示する
       eval: |
         JavaScriptコードを評価する
       ping: |
@@ -32,9 +30,9 @@ meta:
       locale: |
         ロケールを変更する
 
-      
+
 commands:
-  # strings used in commands  
+  # strings used in commands
   locale:
     none: |
       ロケール名は必要です。
@@ -44,5 +42,3 @@ commands:
       そのロケールは見つかりませんでした。
     changed: |
       サーバーのロケールは変更しました。 `{PREFIX}locale <ロケール名>`でいつも変更できます。
-
-  

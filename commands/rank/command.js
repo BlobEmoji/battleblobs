@@ -13,19 +13,20 @@ class Rank extends CommandBaseClass {
   }
 
   async run(context) {
-    const { connection } = context;
+    const { client, connection } = context;
 
     context.log('silly', 'acquiring user data for search..');
     const userData = await connection.memberData(context.member);
+    const _ = (...x) => client.localize(userData.locale, ...x);
     context.log('silly', 'got user data');
 
 
     if (userData.state_engaged) {
-      await context.send('You cannot do that right now.');
+      await context.send(_('commands.general.error.engaged'));
       return;
     }
     if (await connection.isPartyEmpty(context.member)) {
-      await context.send('You don\'t have a party yet. Use `-choose` to make one.');
+      await context.send(_('commands.general.error.partyless'), { PREFIX: context.prefix });
       return;
     }
 
@@ -36,10 +37,10 @@ class Rank extends CommandBaseClass {
     var color = 0;
     var response = '';
 
-        
+
     top5.forEach(function(element) {
       if (element.user_id === context.author.id) {
-        response += `**${element.row_number}: <@${element.user_id}> with ${element.ranking} Blob Trophies**\n`;
+        response += _('commands.rank.response', { PLACE: element.row_number, USERID: element.user_id, TROPHIES: element.ranking });
         switch (element.row_number) {
           case '1':
             color = 16766720;
@@ -53,17 +54,18 @@ class Rank extends CommandBaseClass {
         }
       }
       else
-        response += `${element.row_number}: <@${element.user_id}> with ${element.ranking} **Blob Trophies**\n`;
+        response += _('commands.rank.response', { PLACE: element.row_number, USERID: element.user_id, TROPHIES: element.ranking });
     });
 
     if (currentRank.row_number > 5) {
       var adjRanks = await connection.getAdjRanks(context.member, currentRank.row_number);
       response += '...\n';
-      response += `${adjRanks[0].row_number}: <@${adjRanks[0].user_id}> with ${adjRanks[0].ranking} **Blob Trophies**\n`;
-      response += `**${currentRank.row_number}: <@${currentRank.user_id}> with ${currentRank.ranking} Blob Trophies**`;
+      response += _('commands.rank.response', { PLACE: adjRanks[0].row_number, USERID: adjRanks[0].user_id, TROPHIES: adjRanks[0].ranking });
+      response += _('commands.rank.last_rank_response', { PLACE: currentRank.row_number, USERID: currentRank.user_id, TROPHIES: currentRank.ranking });
       if (adjRanks.length === 2) {
-        response += `\n${adjRanks[1].row_number}: <@${adjRanks[1].user_id}> with ${adjRanks[1].ranking} **Blob Trophies**`;
-      } 
+        response += `\n`;
+        response += _('commands.rank.last_rank_response', { PLACE: adjRanks[1].row_number, USERID: adjRanks[1].user_id, TROPHIES: adjRanks[1].ranking });
+      }
     }
     context.send({
       embed: {

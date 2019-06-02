@@ -25,8 +25,6 @@ meta:
       # help strings for various commands
       help: |
         Affiche les commandes disponibles pour vous.
-      meta: |
-        Affiche des informations sur le status actuel du bot.
       eval: |
         Exécute du code JS.
       ping: |
@@ -46,5 +44,3 @@ commands:
       Cette langue n'a pas été trouvée.
     changed: |
       La langue pour ce serveur a été changée. Utilisez `{PREFIX}locale <langue>` n'importe quand pour changer.
-
-  
